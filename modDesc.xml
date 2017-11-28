@@ -1,23 +1,130 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="30">
-    <author>Dschonny</author>
-    <version>0.6</version>
+<modDesc descVersion="38">
+    <author>Dschonny, Slivicon</author>
+    <version>1.0.0.7</version>
     <title>
-        <en>vehicleSort for LS17</en>
-        <de>vehicleSort für LS17</de>
+        <de>VehicleSort</de>
+        <en>VehicleSort</en>
+        <fr>VehicleSort</fr>
     </title>
     <description>
-        <en>
-<![CDATA[Customize the order in which your vehicles are chosen when using the tab-key or switch by navigating through a list. PARKING FUNCTION DISABLED. NO WARRANTY, MP NOT TESTED!]]>
-        </en>
-        <de>
-<![CDATA[Verändere nach Belieben die Reihenfolge, in der du mit der Tab-Taste durch deine Fahrzeuge springst oder wechsel komfortabel über die Fahrzeug-Liste. PARKFUNKTION DEAKTIVIERT. KEINE GEWÄHR, MP NICHT GETESTET!]]>
-        </de>
-    </description>
+        <de><![CDATA[
 
-    <iconFilename>store.png</iconFilename>
+Verändere nach Belieben die Reihenfolge, in der du mit der Tab-Taste durch deine Fahrzeuge springst oder wechsel komfortabel über die Fahrzeug-Liste.
+
+Wie benutzt man:
+Benutze Numpad oder Maus - kann in den Spieloptionen angepasst werden
+Numpad 0 oder Mittlere Maustaste öffnet die Liste der Fahrzeuge in der Reihenfolge, in der Sie sie durchblättern
+Numpad 2 und 8 oder Mausrad bewegt Auswahl in Liste (grün)
+Numpad 5 oder Linke Maustaste schaltet um, um das Fahrzeug in Listen- / Tab-Reihenfolge zu bewegen (Auswahl wird rot)
+Numpad [Enter] oder rechte Maustaste ruft das ausgewählte Fahrzeug auf (wenn es nicht belegt ist)
+Numpad [+] oder Maus-Taste 4 schaltet den Parkmodus um (Fahrzeug aus der Tabliste entfernt und in der VehicleSort-Liste mit [P] vorangestellt)
+Numpad [-] öffnet das Konfigurationsmenü
+ 
+Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett dargestellt.
+
+Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
+
+Änderungsprotokoll:
+ v1.0.0.7 Slivicon
+   hinzugefügt $ l10n Unterstützung
+   hinzugefügte Übersetzungsdaten
+   zusätzliche Unterstützung für die Anzeige von AI-Controllern (credit: VehicleGroupsSwitcher)
+   dynamische Textdimensionen wo möglich
+   feste Spielernamenanzeige für kontrollierte Fahrzeuge
+   behoben für dedizierten Server 1.5.1 Multiplayer
+   fixe fehlende Lokalisierungswerte (l10n)
+   feste Speichereinstellungen bei Verbindung mit einem externen Multiplayer-Host
+   feste Listenwerte
+   erhöhte descVersion auf 38
+   Änderungsprotokoll in modDesc.xml verschoben
+   umgestaltet
+
+ v0.6 Dschonny
+   behoben um richtig mit dem FS17 Patch 1.3 zu arbeiten
+   Option zum Anzeigen / Verdecken von Namen anderer Spieler hinzugefügt
+   Option hinzugefügt, um Füllstände von Fahrzeugen in der Liste anzuzeigen (Gesamt / Prozentsatz)
+
+     ]]></de>
+        <en><![CDATA[
+
+Customize the order in which your vehicles are chosen when using the tab-key or switch by navigating through a list.
+
+How to use:
+Use NumPad or Mouse - can be customized in game options
+NumPad 0 or Middle Mouse Button opens list of vehicles in the order you tab through them
+NumPad 2 and 8 or Mouse Wheel moves selection in list (green)
+NumPad 5 or Left Mouse Button toggles mode to move vehicle in list/tab order (selection turns red)
+NumPad [Enter] or Right Mouse Button enters selected vehicle (if it is unoccupied)
+NumPad [+] or Mouse Button 4 toggles parking mode (vehicle removed from tab list and prefixed in VehicleSort list with [P])
+NumPad [-] opens config menu
+ 
+If the player is in a vehicle it will appear as bold in the list.
+
+Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
+
+Change Log:
+ v1.0.0.7 Slivicon
+   added $l10n support
+   added translation data
+   added support for showing AI controllers (credit: VehicleGroupsSwitcher)
+   dynamic text dimensions where possible
+   fixed player names display for controlled vehicles
+   fixed for dedicated server 1.5.1 multiplayer
+   fixed missing localization values (l10n)
+   fixed saving settings when connected to an external multiplayer host
+   fixed list values
+   increased descVersion to 38
+   moved change log to modDesc.xml
+   refactored
+
+ v0.6 Dschonny
+   fixed to properly work with FS17 patch 1.3
+   added option to show/hide names of other players
+   added option to show fill levels of vehicles in list (total/percentage)
+
+ ]]></en>
+    <fr><![CDATA[
+    
+Personnalisez l'ordre dans lequel vos véhicules sont choisis lorsque vous utilisez la touche de tabulation ou passez d'une liste à l'autre.
+
+Comment utiliser:
+Utilisez le pavé numérique ou la souris - peut être personnalisé dans les options de jeu
+Le pavé numérique 0 ou le bouton central de la souris ouvre la liste des véhicules dans l'ordre dans lequel vous les avez passés.
+Le pavé numérique 2 et 8 ou la molette de souris déplace la sélection dans la liste (vert)
+Le pavé numérique 5 ou le bouton gauche de la souris permettent de déplacer le véhicule dans l'ordre de la liste ou des onglets (la sélection devient rouge)
+Le pavé numérique [Entrée] ou le bouton droit de la souris entre dans le véhicule sélectionné (s'il est inoccupé)
+Le pavé numérique [+] ou le bouton de la souris 4 permet de basculer entre les modes de stationnement (véhicule retiré de la liste des onglets et préfixé dans la liste VehicleSort avec [P])
+Le pavé numérique [-] ouvre le menu de configuration
+ 
+Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
+
+Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
+
+Journal des changements:
+ v1.0.0.7 Slivicon
+   ajouté $ l10n soutien
+   données de traduction ajoutées
+   Ajout du support pour montrer les contrôleurs IA (crédit: VehicleGroupsSwitcher)
+   les dimensions du texte dynamique si possible
+   Affichage des noms de joueurs fixes pour les véhicules contrôlés
+   corrigé pour le serveur dédié 1.5.1 multijoueur
+   valeurs de localisation manquantes fixes (l10n)
+   paramètres d'enregistrement fixes lors de la connexion à un hôte multijoueur externe
+   valeurs de liste fixes
+   augmentation descVersion à 38
+   Déplacer le journal des modifications dans modDesc.xml
+   refacturé
+
+ v0.6 Dschonny
+   fixé pour fonctionner correctement avec FS17 patch 1.3
+   Ajout d'une option pour afficher / masquer les noms des autres joueurs
+   Ajout d'une option pour afficher les niveaux de remplissage des véhicules dans la liste (total / pourcentage)
+    
+ ]]></fr>
+    </description>
+    <iconFilename>store.dds</iconFilename>
     <multiplayer supported="true" />
-	
 	<inputBindings>
 		<input name="vs_toggleList" 	key1="KEY_KP_0" mouse="MOUSE_BUTTON_MIDDLE" />
 		<input name="vs_lockListItem" 	key1="KEY_KP_5" mouse="MOUSE_BUTTON_LEFT" />
@@ -26,109 +133,140 @@
 		<input name="vs_changeVehicle" 	key1="KEY_KP_enter" mouse="MOUSE_BUTTON_RIGHT" />
 		<input name="vs_showConfig" 	key1="KEY_KP_minus" />
 		<input name="vs_togglePark" 	key1="KEY_KP_plus" mouse="MOUSE_BUTTON_X1" />
-		
     </inputBindings>
-    
 	<l10n>
         <text name="input_vs_toggleList">
 			<de>VehicleSort: Fahrzeugliste anzeigen</de>
 			<en>VehicleSort: Show vehicle list</en>
+            <fr>VehicleSort: Afficher la liste des véhicules</fr>
 		</text>
 		<text name="input_vs_lockListItem">
 			<de>VehicleSort: Listeneintrag auswählen</de>
 			<en>VehicleSort: Select list entry</en>
+            <fr>VehicleSort: Sélectionner une entrée de liste</fr>
 		</text>
 		<text name="input_vs_moveCursorUp">
 			<de>VehicleSort: Auswahl hoch</de>
 			<en>VehicleSort: Move cursor up</en>
+            <fr>VehicleSort: Déplacer le curseur vers le haut</fr>
 		</text>
 		<text name="input_vs_moveCursorDown">
 			<de>VehicleSort: Auswahl runter</de>
-			<en>VehicleSort: Move Curser down</en>
+			<en>VehicleSort: Move cursor down</en>
+            <fr>VehicleSort: Déplace le curseur vers le bas</fr>
 		</text>
 		<text name="input_vs_changeVehicle">
 			<de>VehicleSort: Ins Fahrzeug wechseln</de>
 			<en>VehicleSort: Enter selected vehicle</en>
+            <fr>VehicleSort: Entrer le véhicule sélectionné</fr>
 		</text>
 		<text name="input_vs_showConfig">
 			<de>VehicleSort: Konfiguration anzeigen</de>
 			<en>VehicleSort: Show configuration</en>
+            <fr>VehicleSort: Afficher la configuration</fr>
 		</text>
 		<text name="input_vs_togglePark">
 			<de>VehicleSort: Fahrzeug parken/entparken</de>
-			<en>VehicleSort: Park/unpark vehicle</en>
+			<en>VehicleSort: Toggle vehicle parking</en>
+            <fr>VehicleSort: Activer/désactiver le stationnement du véhicule</fr>
 		</text>
-		
-		
 		<text name="headline">
-            <en>Your Vehicles:</en>
-            <de>Deine Fahrzeuge:</de> 
+            <de>Fahrzeuge:</de>
+            <en>Vehicles:</en>
+            <fr>Véhicules:</fr>
         </text>
 		<text name="configHeadline">
+            <de>VehicleSort-Konfiguration:</de>
             <en>VehicleSort Configuration:</en>
-            <de>VehicleSort-Konfiguration:</de> 
+            <fr>Configuration de VehicleSort:</fr>
         </text>
         <text name="with">
-            <en>with</en>
             <de>mit</de>
+            <en>with</en>
+            <fr>avec</fr>
         </text>
-		
 		<text name="showTrain">
 			<de>Züge in Fahrzeugliste anzeigen</de>
 			<en>Show trains in vehicle list</en>
+            <fr>Afficher les trains dans la liste des véhicules</fr>
 		</text>
 		<text name="showCrane">
 			<de>Zug-Kräne in Fahrzeugliste anzeigen</de>
-			<en>Show train-cranes in vehicle list</en>
+			<en>Show train cranes in vehicle list</en>
+            <fr>Afficher les grues de train dans la liste des véhicules</fr>
 		</text>
 		<text name="showBrand">
 			<de>Markenname in Fahrzeugliste anzeigen</de>
-			<en>Show brandname in vehicle list</en>
+			<en>Show brand name in vehicle list</en>
+            <fr>Afficher le nom de la marque dans la liste des véhicules</fr>
 		</text>
 		<text name="showType">
 			<de>Typ in Fahrzeugliste anzeigen</de>
 			<en>Show type in vehicle list</en>
+            <fr>Afficher le type dans la liste des véhicules</fr>
 		</text>
 		<text name="showNames">
-			<de>Namen anderer Spieler in Fahrzeugliste anzeigen</de>
-			<en>Show names of other players in vehicle list</en>
+			<de>Namen von Spielern in der Fahrzeugliste anzeigen</de>
+			<en>Show names of players in vehicle list</en>
+            <fr>Afficher les noms des joueurs dans la liste des véhicules</fr>
 		</text>
 		<text name="showFillLevels">
 			<de>Füllstandsanzeige in Fahrzeugliste</de>
-			<en>Show filllevel in vehicle list</en>
+			<en>Show fill level in vehicle list</en>
+            <fr>Afficher le niveau de remplissage dans la liste des véhicules</fr>
 		</text>
 		<text name="showPercentages">
 			<de>Füllstandsanzeige in Prozent</de>
-			<en>Show fillevel as percentage</en>
+			<en>Show fill level as percentage</en>
+            <fr>Afficher le niveau de remplissage en pourcentage</fr>
 		</text>
 		<text name="showEmpty">
 			<de>Füllstandsanzeige bei leeren Fahrzeugen anzeigen</de>
-			<en>Show fillevel of empty vehicles</en>
+			<en>Show fill level of empty vehicles</en>
+            <fr>Afficher le niveau de remplissage des véhicules vides</fr>
 		</text>
-		
 		<text name="vs_on">
 			<de>An</de>
 			<en>On</en>
+            <fr>Activée</fr>
 		</text>
 		<text name="vs_off">
 			<de>Aus</de>
 			<en>Off</en>
+            <fr>Désactivée</fr>
 		</text>
 		<text name="vs_train">
 			<de>Zug</de>
 			<en>Train</en>
+            <fr>Train</fr>
 		</text>
 		<text name="vs_crane">
 			<de>Zug-Kran</de>
 			<en>Train crane</en>
+            <fr>Grue de train</fr>
 		</text>
-		<text name="vOrderMissing">
-			<de>VehicleSort: Kein Save-File gefunden - benutze Standard-Reihenfolge! (Dies ist kein Fehler beim ersten Start von VehicleSort!)</de>
-			<en>VehicleSort: No Save-File found - using standard vehicle order! (This is normal when using the mod for the first time!)</en>
-		</text>
+        <text name="vs_implement">
+            <de>Geräte</de>
+            <en>Implement</en>
+            <fr>Outil</fr>
+        </text>
+        <text name="hired">
+            <de>Versteckt</de>
+            <en>Hired</en>
+            <fr>Embauché</fr>
+        </text>
+        <text name="courseplay">
+            <de>CoursePlay</de>
+            <en>CoursePlay</en>
+            <fr>CoursePlay</fr>
+        </text>
+        <text name="followme">
+            <de>FollowMe</de>
+            <en>FollowMe</en>
+            <fr>FollowMe</fr>
+        </text>
     </l10n>
-
     <extraSourceFiles>
-      <sourceFile filename="vehicleSort.lua" />
+        <sourceFile filename="VehicleSort.lua" />
     </extraSourceFiles>
 </modDesc>
