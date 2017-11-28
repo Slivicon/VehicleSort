@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="30">
+    <author>Dschonny</author>
+    <version>0.6</version>
+    <title>
+        <en>vehicleSort for LS17</en>
+        <de>vehicleSort für LS17</de>
+    </title>
+    <description>
+        <en>
+<![CDATA[Customize the order in which your vehicles are chosen when using the tab-key or switch by navigating through a list. PARKING FUNCTION DISABLED. NO WARRANTY, MP NOT TESTED!]]>
+        </en>
+        <de>
+<![CDATA[Verändere nach Belieben die Reihenfolge, in der du mit der Tab-Taste durch deine Fahrzeuge springst oder wechsel komfortabel über die Fahrzeug-Liste. PARKFUNKTION DEAKTIVIERT. KEINE GEWÄHR, MP NICHT GETESTET!]]>
+        </de>
+    </description>
+
+    <iconFilename>store.png</iconFilename>
+    <multiplayer supported="true" />
+	
+	<inputBindings>
+		<input name="vs_toggleList" 	key1="KEY_KP_0" mouse="MOUSE_BUTTON_MIDDLE" />
+		<input name="vs_lockListItem" 	key1="KEY_KP_5" mouse="MOUSE_BUTTON_LEFT" />
+		<input name="vs_moveCursorUp" 	key1="KEY_KP_8" mouse="MOUSE_BUTTON_WHEEL_UP" />
+		<input name="vs_moveCursorDown" key1="KEY_KP_2" mouse="MOUSE_BUTTON_WHEEL_DOWN" />
+		<input name="vs_changeVehicle" 	key1="KEY_KP_enter" mouse="MOUSE_BUTTON_RIGHT" />
+		<input name="vs_showConfig" 	key1="KEY_KP_minus" />
+		<input name="vs_togglePark" 	key1="KEY_KP_plus" mouse="MOUSE_BUTTON_X1" />
+		
+    </inputBindings>
+    
+	<l10n>
+        <text name="input_vs_toggleList">
+			<de>VehicleSort: Fahrzeugliste anzeigen</de>
+			<en>VehicleSort: Show vehicle list</en>
+		</text>
+		<text name="input_vs_lockListItem">
+			<de>VehicleSort: Listeneintrag auswählen</de>
+			<en>VehicleSort: Select list entry</en>
+		</text>
+		<text name="input_vs_moveCursorUp">
+			<de>VehicleSort: Auswahl hoch</de>
+			<en>VehicleSort: Move cursor up</en>
+		</text>
+		<text name="input_vs_moveCursorDown">
+			<de>VehicleSort: Auswahl runter</de>
+			<en>VehicleSort: Move Curser down</en>
+		</text>
+		<text name="input_vs_changeVehicle">
+			<de>VehicleSort: Ins Fahrzeug wechseln</de>
+			<en>VehicleSort: Enter selected vehicle</en>
+		</text>
+		<text name="input_vs_showConfig">
+			<de>VehicleSort: Konfiguration anzeigen</de>
+			<en>VehicleSort: Show configuration</en>
+		</text>
+		<text name="input_vs_togglePark">
+			<de>VehicleSort: Fahrzeug parken/entparken</de>
+			<en>VehicleSort: Park/unpark vehicle</en>
+		</text>
+		
+		
+		<text name="headline">
+            <en>Your Vehicles:</en>
+            <de>Deine Fahrzeuge:</de> 
+        </text>
+		<text name="configHeadline">
+            <en>VehicleSort Configuration:</en>
+            <de>VehicleSort-Konfiguration:</de> 
+        </text>
+        <text name="with">
+            <en>with</en>
+            <de>mit</de>
+        </text>
+		
+		<text name="showTrain">
+			<de>Züge in Fahrzeugliste anzeigen</de>
+			<en>Show trains in vehicle list</en>
+		</text>
+		<text name="showCrane">
+			<de>Zug-Kräne in Fahrzeugliste anzeigen</de>
+			<en>Show train-cranes in vehicle list</en>
+		</text>
+		<text name="showBrand">
+			<de>Markenname in Fahrzeugliste anzeigen</de>
+			<en>Show brandname in vehicle list</en>
+		</text>
+		<text name="showType">
+			<de>Typ in Fahrzeugliste anzeigen</de>
+			<en>Show type in vehicle list</en>
+		</text>
+		<text name="showNames">
+			<de>Namen anderer Spieler in Fahrzeugliste anzeigen</de>
+			<en>Show names of other players in vehicle list</en>
+		</text>
+		<text name="showFillLevels">
+			<de>Füllstandsanzeige in Fahrzeugliste</de>
+			<en>Show filllevel in vehicle list</en>
+		</text>
+		<text name="showPercentages">
+			<de>Füllstandsanzeige in Prozent</de>
+			<en>Show fillevel as percentage</en>
+		</text>
+		<text name="showEmpty">
+			<de>Füllstandsanzeige bei leeren Fahrzeugen anzeigen</de>
+			<en>Show fillevel of empty vehicles</en>
+		</text>
+		
+		<text name="vs_on">
+			<de>An</de>
+			<en>On</en>
+		</text>
+		<text name="vs_off">
+			<de>Aus</de>
+			<en>Off</en>
+		</text>
+		<text name="vs_train">
+			<de>Zug</de>
+			<en>Train</en>
+		</text>
+		<text name="vs_crane">
+			<de>Zug-Kran</de>
+			<en>Train crane</en>
+		</text>
+		<text name="vOrderMissing">
+			<de>VehicleSort: Kein Save-File gefunden - benutze Standard-Reihenfolge! (Dies ist kein Fehler beim ersten Start von VehicleSort!)</de>
+			<en>VehicleSort: No Save-File found - using standard vehicle order! (This is normal when using the mod for the first time!)</en>
+		</text>
+    </l10n>
+
+    <extraSourceFiles>
+      <sourceFile filename="vehicleSort.lua" />
+    </extraSourceFiles>
+</modDesc>
