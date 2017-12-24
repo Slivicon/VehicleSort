@@ -39,16 +39,15 @@ vsClass.vsInitialized = false;
 addModEventListener(vsClass);
 
 local vsClass_mt = Class(vsClass, Mission00);
-
 local modItem = ModsUtil.findModItemByModName(g_currentModName);
 vsClass.version = (modItem and modItem.version) and modItem.version or "?.?.?";
 
 function vsClass:new(baseDirectory, customMt)
   local mt = customMt;
   if mt == nil then
-    mt = SampleModMap_mt;
+    mt = vsClass_mt;
   end;
-  local self = SampleModMap:superClass():new(baseDirectory, mt);
+  local self = vsClass:superClass():new(baseDirectory, mt);
   return self;
 end;
 
@@ -374,7 +373,7 @@ function vsClass:vsInit()
   createFolder(vsClass.vsSavePath);
   vsClass.vsXML = vsClass.vsSavePath .. "v_order.xml";
   vsClass:loadVehicleOrder();
-  dprint("Vehicle Sort: Initialized.");
+  vsClass.dprint("Vehicle Sort: Initialized.");
 end
 
 function vsClass.addVehic(a, b)
@@ -499,13 +498,13 @@ end
 
 function vsClass:saveVehicleOrder()
   vsClass.saveFile = createXMLFile("vsClass.saveFile", vsClass.vsXML, "vOrder");
-  dprint("Saving config");
+  vsClass.dprint("Saving config");
   for i = 1, #vsClass.config do
     setXMLBool(vsClass.saveFile, "vOrder.vsConfig#" .. vsClass.config[i][1],vsClass.config[i][2])
   end;
-  dprint(#vsClass.vUserOrder .. " needs to be saved.");
+  vsClass.dprint(#vsClass.vUserOrder .. " needs to be saved.");
   for i = 1, #vsClass.vUserOrder do
-    dprint("Saving vehicle " .. i);
+    vsClass.dprint("Saving vehicle " .. i);
     setXMLInt(vsClass.saveFile, "vOrder.vehicle" .. i .. "#id", vsClass.vUserOrder[i].ranking);
     setXMLBool(vsClass.saveFile, "vOrder.vehicle" .. i .. "#parked", g_currentMission.steerables[i].nonTabbable);
   end;
@@ -535,20 +534,20 @@ function vsClass:loadVehicleOrder()
     while hasXMLProperty(vsClass.saveFile, "vOrder.vehicle" .. vIndex .. "#id") do
       table.insert(savedIDs, getXMLInt(vsClass.saveFile, "vOrder.vehicle" .. vIndex .. "#id"));
       table.insert(savedParkStates, getXMLBool(vsClass.saveFile, "vOrder.vehicle" .. vIndex .. "#parked"));
-      dprint("Recognized Order Index: " .. savedIDs[vIndex]);
+      vsClass.dprint("Recognized Order Index: " .. savedIDs[vIndex]);
       vIndex = vIndex + 1;
     end;
     local vTSize = table.getn(g_currentMission.steerables);
     if #savedIDs == vTSize then
-      dprint("Size Match savedIDs (" .. #savedIDs .. ") <-> globalVehicleTableSize (" .. vTSize .. ").");
+      vsClass.dprint("Size Match savedIDs (" .. #savedIDs .. ") <-> globalVehicleTableSize (" .. vTSize .. ").");
       for i = 1, vTSize do
-        dprint("Moving away from Table Position " .. i);
+        vsClass.dprint("Moving away from Table Position " .. i);
         local listItem = {};
         listItem.ranking = tonumber(savedIDs[i]);
         vsClass.vUserOrder[i] = listItem;
         local eBreaker = 0;
         while vsClass.vInitOrder[i].ranking ~= vsClass.vUserOrder[i].ranking and eBreaker <= (vTSize + 10) do
-          dprint("Moving ID " .. vsClass.vInitOrder[i].ranking .. " - eBreaker: " .. eBreaker);
+          vsClass.dprint("Moving ID " .. vsClass.vInitOrder[i].ranking .. " - eBreaker: " .. eBreaker);
           eBreaker = eBreaker + 1;
           local tempIndex = vsClass.vInitOrder[i];
           local tempVehicle = g_currentMission.steerables[i];
@@ -575,9 +574,9 @@ function vsClass:loadVehicleOrder()
     end;
   end;
   if not hasXMLProperty(vsClass.saveFile, "vOrder.vsConfig") then
-    dprint("No config file found.");
+    vsClass.dprint("No config file found.");
   else
-    dprint("Config file found.");
+    vsClass.dprint("Config file found.");
     for i = 1, #vsClass.config do
       local aBool = getXMLBool(vsClass.saveFile, "vOrder.vsConfig#" .. vsClass.config[i][1] );
       if aBool ~= nil then
@@ -594,7 +593,7 @@ function vsClass.calculateFillLevel(vehic, d)
   if d ~= nil then
     depth = d;
   end;
-  dprint("calcFL-Depth: " .. tostring(depth));
+  --vsClass.dprint("calcFL-Depth: " .. tostring(depth));
   depth = depth + 1;
   if vehic ~= nil then
     if vehic.getFillLevel ~= nil then
@@ -605,7 +604,7 @@ function vsClass.calculateFillLevel(vehic, d)
     end;
     for _,imp in pairs(vehic.attachedImplements) do
       if imp.object ~= nil then
-        dprint("Checking attachment: " .. tostring(imp.object.typeDesc));
+        --vsClass.dprint("Checking attachment: " .. tostring(imp.object.typeDesc));
         local f, c = vsClass.calculateFillLevel(imp.object, depth);
         if f ~= nil and c ~= nil then
           fillLev = fillLev + f;
@@ -622,17 +621,17 @@ function vsClass.calcPercentage(actualVal, maxVal)
   return (math.floor(perc * 10)/10);
 end
 
-function dprint(aString)
+function vsClass.dprint(aString)
   if g_dedicatedServerInfo == nil and vsClass.DEBUG then
     if type(aString) == "table" then
-      printTableData(aString);
+      vsClass.printTableData(aString);
     else
       print("******* Vehicle Sort Debug Output: *******:  " .. tostring(aString));
     end;
   end;
 end
 
-function printTableData(aTable)
+function vsClass.printTableData(aTable)
   if type(aTable) ~= "table" then
     print("Vehicle Sort: ===Element " .. tostring(aTable) .. " is not a table.");
   else
@@ -649,11 +648,29 @@ function printTableData(aTable)
   end;
 end
 
+function vsClass.setToolById(self, superFunc, toolId, noEventSend) --credit: Xentro, GameExtension
+  if not vsClass.showSteerables and not vsClass.showConfig then
+    superFunc(self, toolId, noEventSend);
+  else
+    superFunc(self, 0, true); --do not switch to chainsaws while vehiclesort is displayed
+  end;
+end;
+
+function vsClass.zoomSmoothly(self, superFunc, offset)
+  if vsClass.showConfig or vsClass.showSteerables then
+    superFunc(self, 0); --TODO find a better way to prevent camera zoom while vs is displayed
+  else
+    superFunc(self, offset);
+  end;
+end
+
 if g_dedicatedServerInfo == nil then
   Steerable.postLoad  = Utils.appendedFunction(Steerable.postLoad, vsClass.loadSteerable);
   Attachable.postLoad = Utils.appendedFunction(Attachable.postLoad, vsClass.loadAttachable);
   vsClass:superClass():superClass().addVehicle = Utils.appendedFunction(vsClass:superClass():superClass().addVehicle, vsClass.addVehic);
   vsClass:superClass():superClass().removeVehicle = Utils.appendedFunction(vsClass:superClass():superClass().removeVehicle, vsClass.removeVehic);
+  Player.setToolById = Utils.overwrittenFunction(Player.setToolById, vsClass.setToolById);
+  VehicleCamera.zoomSmoothly = Utils.overwrittenFunction(VehicleCamera.zoomSmoothly, vsClass.zoomSmoothly);
 end;
 
 print(string.format("Script loaded: VehicleSort.lua (v%s)", vsClass.version));

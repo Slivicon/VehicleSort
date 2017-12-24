@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
     <author>Dschonny, Slivicon</author>
-    <version>1.0.0.7</version>
+    <version>1.0.0.8</version>
     <title>
         <de>VehicleSort</de>
         <en>VehicleSort</en>
@@ -26,6 +26,11 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
+ v1.0.0.8 Slivicon
+   wenn das Mausrad verwendet wird, wenn VehicleSort angezeigt wird:
+     -verhindern, dass Kettensägen aktiviert werden
+     -vermeiden Sie Kamera Zoom
+
  v1.0.0.7 Slivicon
    hinzugefügt $ l10n Unterstützung
    hinzugefügte Übersetzungsdaten
@@ -64,6 +69,11 @@ If the player is in a vehicle it will appear as bold in the list.
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
 
 Change Log:
+ v1.0.0.8 Slivicon
+   while using mousewheel when VehicleSort is displayed:
+     -prevent chainsaws from activating
+     -avoid camera zoom
+
  v1.0.0.7 Slivicon
    added $l10n support
    added translation data
@@ -102,6 +112,11 @@ Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
 Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
 
 Journal des changements:
+ v1.0.0.8 Slivicon
+   pendant que le joueur utilise mousewheel quand VehicleSort est affiché:
+     -prévenir les tronçonneuses de l'activation
+     -prévenir la caméra zoom
+
  v1.0.0.7 Slivicon
    ajouté $ l10n soutien
    données de traduction ajoutées
@@ -123,7 +138,7 @@ Journal des changements:
     
  ]]></fr>
     </description>
-    <iconFilename>store.dds</iconFilename>
+    <iconFilename>icon.dds</iconFilename>
     <multiplayer supported="true" />
 	<inputBindings>
 		<input name="vs_toggleList" 	key1="KEY_KP_0" mouse="MOUSE_BUTTON_MIDDLE" />
