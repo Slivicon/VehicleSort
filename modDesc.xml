@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
     <author>Dschonny, Slivicon</author>
-    <version>1.0.0.8</version>
+    <version>1.0.0.9</version>
     <title>
         <de>VehicleSort</de>
         <en>VehicleSort</en>
@@ -26,6 +26,9 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
+ v1.0.0.9 Slivicon
+   Behebung eines von Hollauer gemeldeten Fehlers, bei dem einige Artikel möglicherweise keinen Markennamen haben
+
  v1.0.0.8 Slivicon
    wenn das Mausrad verwendet wird, wenn VehicleSort angezeigt wird:
      -verhindern, dass Kettensägen aktiviert werden
@@ -69,6 +72,9 @@ If the player is in a vehicle it will appear as bold in the list.
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
 
 Change Log:
+ v1.0.0.9 Slivicon
+   fix error reported by Hollauer where some items may not have a brand name
+   
  v1.0.0.8 Slivicon
    while using mousewheel when VehicleSort is displayed:
      -prevent chainsaws from activating
@@ -112,6 +118,9 @@ Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
 Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
 
 Journal des changements:
+ v1.0.0.9 Slivicon
+   correction d'une erreur signalée par Hollauer où certains articles peuvent ne pas avoir de nom de marque
+
  v1.0.0.8 Slivicon
    pendant que le joueur utilise mousewheel quand VehicleSort est affiché:
      -prévenir les tronçonneuses de l'activation

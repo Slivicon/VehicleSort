@@ -54,7 +54,7 @@ end;
 function vsClass:getNameBrand(xmlFile)
   local sName = getXMLString(xmlFile, "vehicle.storeData.brand");
   if sName == nil then
-    sName = "";
+    sName = "Lizard";
   end;
   return sName;
 end
@@ -419,12 +419,15 @@ end
 function vsClass:getAttachment(oAttachment, iNum)
   local sName = "'";
   if vsClass.config[3][2] then
-    sName  = sName .. oAttachment.vs_brandName .. " ";
+    sName  = sName .. Utils.getNoNil(oAttachment.vs_brandName, "Lizard") .. " ";
   end;
-  sName = sName .. Utils.getNoNil(oAttachment.vs_name, "(" .. g_i18n:getText("vs_implement") .. " " .. iNum .. ")") .. "'";
+  sName = sName .. Utils.getNoNil(oAttachment.vs_name, "(" .. g_i18n:getText("vs_implement") .. " " .. iNum .. ")");
   if vsClass.config[4][2] then
-    sName = sName .. " (" .. Utils.getNoNil(oAttachment.typeDesc, "") .. ")";
+    if oAttachment.typeDesc ~= nil then
+      sName = sName .. " (" .. oAttachment.typeDesc .. ")";
+    end;
   end;
+  sName = sName .. "'";
   return sName;
 end
 
