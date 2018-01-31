@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
     <author>Dschonny, Slivicon</author>
-    <version>1.0.0.9</version>
+    <version>2.0.0.0</version>
     <title>
         <de>VehicleSort</de>
         <en>VehicleSort</en>
@@ -26,6 +26,20 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
+ v2.0.0.0 Slivicon
+   Meistens neu geschriebenen Code
+   Neues persistentes eindeutiges ID-System zur Aufrechterhaltung der Fahrzeugreihenfolge zwischen den Sitzungen
+   Verbesserte Markendarstellung und visuelle Darstellung (neuer halbtransparenter dunkler Hintergrund)
+   Neue Konfigurationsoption: Kleinere Textgröße
+   Umschließt nun langen Text für lange Listen, die mehrere Spalten umfassen
+   Neue verbesserte Methode zur Erkennung von Zügen und Bahnhofskranen
+   Das Zurücksetzen von Fahrzeugen sollte die Tab-Reihenfolge nicht mehr von der benutzerdefinierten Reihenfolge ändern
+   Die gespeicherte Bestellung wird nicht mehr zurückgesetzt, wenn sich die Anzahl der Fahrzeuge geändert hat, nur wenn sich die Karte geändert hat
+   Erhöhte Effizienz: Speichern Sie die Bestellung nur dann auf der Festplatte, wenn eine Änderung vorgenommen wurde, nicht jedes Mal, wenn VehicleSort im Spiel verwendet wird
+   Mehrere Fehler behoben
+   Mehrere Code-Optimierungen und Refactoring
+   Verbesserte Unterstützung für Multiplayer und dedizierten Server
+
  v1.0.0.9 Slivicon
    Behebung eines von Hollauer gemeldeten Fehlers, bei dem einige Artikel möglicherweise keinen Markennamen haben
 
@@ -72,6 +86,20 @@ If the player is in a vehicle it will appear as bold in the list.
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
 
 Change Log:
+ v2.0.0.0 Slivicon
+   Mostly re-written code
+   New persistent unique ID system to help maintain vehicle order between sessions
+   Improved brand name representation and visual display (new semi-transparent dark background)
+   New config option: Smaller text size
+   Now wraps long text for long lists spanning multiple columns
+   New improved method for detecting trains and train station cranes
+   Resetting vehicles should no longer change the tab order from user specified order
+   Saved order will no longer reset when number of vehicles has changed, only when the map has changed
+   Increased efficiency: Only save order to disk when a change has been made, not every time VehicleSort is used in the game
+   Fixed several bugs
+   Several code optimizations and refactoring
+   Improved multiplayer and dedicated server support
+
  v1.0.0.9 Slivicon
    fix error reported by Hollauer where some items may not have a brand name
    
@@ -118,6 +146,20 @@ Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
 Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
 
 Journal des changements:
+ v2.0.0.0 Slivicon
+   Code principalement réécrit
+   Nouveau système d'identification unique persistant pour aider à maintenir l'ordre du véhicule entre les sessions
+   Représentation de la marque améliorée et affichage visuel (nouveau fond sombre semi-transparent)
+   Nouvelle option de configuration: taille de texte plus petite
+   Enveloppe désormais le texte long pour les longues listes couvrant plusieurs colonnes
+   Nouvelle méthode améliorée pour détecter les trains et les grues de gare
+   La réinitialisation des véhicules ne doit plus modifier l'ordre des onglets dans l'ordre spécifié par l'utilisateur
+   L'ordre enregistré ne sera plus réinitialisé lorsque le nombre de véhicules a changé, seulement lorsque la carte a changé
+   Efficacité accrue: Sauvegardez seulement l'ordre sur le disque quand un changement a été fait, pas toujours à chaque fois que VehicleSort est utilisé dans le jeu.
+   Correction de plusieurs bugs
+   Plusieurs optimisations de code et refactoring
+   Support multijoueur et serveur dédié amélioré
+
  v1.0.0.9 Slivicon
    correction d'une erreur signalée par Hollauer où certains articles peuvent ne pas avoir de nom de marque
 
@@ -194,15 +236,10 @@ Journal des changements:
 			<en>VehicleSort: Toggle vehicle parking</en>
             <fr>VehicleSort: Activer/désactiver le stationnement du véhicule</fr>
 		</text>
-		<text name="headline">
-            <de>Fahrzeuge:</de>
-            <en>Vehicles:</en>
-            <fr>Véhicules:</fr>
-        </text>
 		<text name="configHeadline">
-            <de>VehicleSort-Konfiguration:</de>
-            <en>VehicleSort Configuration:</en>
-            <fr>Configuration de VehicleSort:</fr>
+            <de>VehicleSort-Konfiguration</de>
+            <en>VehicleSort Configuration</en>
+            <fr>Configuration de VehicleSort</fr>
         </text>
         <text name="with">
             <de>mit</de>
@@ -249,6 +286,11 @@ Journal des changements:
 			<en>Show fill level of empty vehicles</en>
             <fr>Afficher le niveau de remplissage des véhicules vides</fr>
 		</text>
+		<text name="smallText">
+			<de>Kleinere Textgröße</de>
+			<en>Smaller text size</en>
+            <fr>Taille de texte plus petite</fr>
+		</text>
 		<text name="vs_on">
 			<de>An</de>
 			<en>On</en>
@@ -275,9 +317,9 @@ Journal des changements:
             <fr>Outil</fr>
         </text>
         <text name="hired">
-            <de>Versteckt</de>
-            <en>Hired</en>
-            <fr>Embauché</fr>
+            <de>Helfer</de>
+            <en>Helper</en>
+            <fr>Assistant</fr>
         </text>
         <text name="courseplay">
             <de>CoursePlay</de>
