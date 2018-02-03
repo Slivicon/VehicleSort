@@ -273,7 +273,7 @@ function VehicleSort:drawList()
   for k, v in ipairs(texts) do
     setTextBold(v[4]);
     setTextColor(unpack(v[5]));
-    renderText(v[1], v[2], v[3], v[6]);
+    renderText(v[1], v[2], v[3], tostring(v[6])); -- x, y, size, txt
     if VehicleSort.debug and v[5] == VehicleSort.tColor.selected then
       VehicleSort.dbgY = VehicleSort.dbgY - VehicleSort.tPos.size - VehicleSort.tPos.spacing;
       renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, string.format('selected textWidth [%f] colWidth [%f]', getTextWidth(v[3], v[6]), VehicleSort.tPos.columnWidth));
@@ -562,7 +562,7 @@ function VehicleSort:init()
   VehicleSort.borderToTop = 1 - VehicleSort.tPos.y;
   VehicleSort.userPath = getUserProfileAppPath();
   VehicleSort.saveBasePath = VehicleSort.userPath .. 'vehicleSort/';
-  if g_currentMission.missionDynamicInfo.serverAddress ~= nil then --multiplayer game and player is not the host (dedi already handled above)
+  if g_currentMission.missionDynamicInfo.serverAddress ~= nil then --multi-player game and player is not the host (dedi already handled above)
     VehicleSort.savePath = VehicleSort.saveBasePath .. g_currentMission.missionDynamicInfo.serverAddress .. '/';
   else
     VehicleSort.savePath = VehicleSort.saveBasePath .. 'savegame' .. g_careerScreen.selectedIndex .. '/';
@@ -695,12 +695,6 @@ function VehicleSort:moveUp()
 end
 
 function VehicleSort:renderBg(y, w, h)
-  -- local alpha = VehicleSort.config[10][2];
-  -- if type(alpha) == 'boolean' or tonumber(alpha) < 0 or tonumber(alpha) > 1 then
-    -- VehicleSort:dp(string.format('Invalid bgTrans value [%s] detected, using default.', tostring(alpha)), 'VehicleSort:renderBg');
-    -- VehicleSort.config[10][2] = VehicleSort.bgTransDef;
-    -- alpha = VehicleSort.config[10][2];
-  -- end;
   setOverlayColor(VehicleSort.bg, 0, 0, 0, VehicleSort.config[10][2]);
   renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h); -- dark background TODO investigate compensating for g_gameSettings:getValue('uiScale')
 end
@@ -713,13 +707,13 @@ function VehicleSort:reset()
   VehicleSort.userOrder = {};
 end
 
-function VehicleSort:resetFinish()
+function VehicleSort:resetFinish() --a reset took place, so revert the flags and align the new tab order with the user order
   VehicleSort:dp('Finishing reset vehicle sequence; setting resetID to 0 and setting userOrder to move reset vehicle tab order back to user order', 'VehicleSort:resetFinish');
   VehicleSort.resetAddHasRun = false;
   VehicleSort.resetRemHasRun = false;
-  VehicleSort.resetID = 0; --a reset took place, so reset the reset ID
+  VehicleSort.resetID = 0;
   VehicleSort.resetNewSteerableID = 0;
-  VehicleSort.userOrder = VehicleSort:getOrder(VehicleSort.userOrder); --a reset took place, changing the tab order, so set it back to user order
+  VehicleSort.userOrder = VehicleSort:getOrder(VehicleSort.userOrder);
 end
 
 function VehicleSort:reSort(old, new)
@@ -740,12 +734,6 @@ function VehicleSort:saveVehicleOrder()
   setXMLString(VehicleSort.saveFile, VehicleSort.key .. VehicleSort.xmlAttrMapId, g_currentMission.missionInfo.mapId);
   for i = 1, #VehicleSort.config do
     if i == 10 then
-      -- local val = VehicleSort.config[i][2];
-      -- if type(val) == 'boolean' then
-        -- val = VehicleSort.bgTransDef;
-      -- else
-        -- val = tonumber(val);
-      -- end;
       setXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], string.format('%.1f', VehicleSort.config[i][2]));
     else
       setXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
@@ -800,12 +788,6 @@ function VehicleSort:update(dt)
       end;
     elseif InputBinding.hasEvent(InputBinding.vs_lockListItem) then
       if VehicleSort.selectedConfigIndex == 10 then
-        -- local val = VehicleSort.config[VehicleSort.selectedConfigIndex][2];
-        -- if tonumber(val) == 0 then
-          -- val = VehicleSort.bgTransDef;
-        -- else
-          -- val = tonumber(val);
-        -- end;
         VehicleSort.config[VehicleSort.selectedConfigIndex][2] = VehicleSort.config[VehicleSort.selectedConfigIndex][2] + 0.1;
         if VehicleSort.config[VehicleSort.selectedConfigIndex][2] > 1 then
           VehicleSort.config[VehicleSort.selectedConfigIndex][2] = 0.0;
@@ -902,7 +884,7 @@ function VehicleSort.loadAttachable(self, savegame)
   self.vs.name = VehicleSort:getName(self.xmlFile, 'Attachable');
   VehicleSort:dp(string.format('Loaded attachable name [%s], brand [%s]', tostring(self.vs.name), tostring(self.vs.brand)), 'VehicleSort.loadAttachable');
 end
-if g_dedicatedServerInfo == nil then -- function only needed by players, as attachables do not need persistent IDs
+if g_dedicatedServerInfo == nil then -- function only needed by players, as attachable objects do not need persistent IDs
   Attachable.postLoad = Utils.appendedFunction(Attachable.postLoad, VehicleSort.loadAttachable);
 end;
 
@@ -1019,11 +1001,11 @@ end
 Steerable.writeStream = Utils.appendedFunction(Steerable.writeStream, VehicleSort.writeStream);
 
 function VehicleSort.zoomSmoothly(self, superFunc, offset)
-  if not VehicleSort.showConfig and not VehicleSort.showSteerables then -- don't zoom camera when mousewheel is used to scroll displayed list
+  if not VehicleSort.showConfig and not VehicleSort.showSteerables then -- don't zoom camera when mouse wheel is used to scroll displayed list
     superFunc(self, offset);
   end;
 end
-if g_dedicatedServerInfo == nil then -- function only needed by players, as this relates to camera zooming while scrolling through vehicle list with mousewheel
+if g_dedicatedServerInfo == nil then -- function only needed by players, as this relates to camera zooming while scrolling through vehicle list with mouse wheel
   VehicleCamera.zoomSmoothly = Utils.overwrittenFunction(VehicleCamera.zoomSmoothly, VehicleSort.zoomSmoothly);
 end;
 
