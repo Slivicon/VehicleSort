@@ -375,28 +375,28 @@ function VehicleSort:getFullVehicleName(index)
   return ret;
 end
 
-function VehicleSort:getName(xmlFile, sFallback)
-  local nam = getXMLString(xmlFile, 'vehicle.storeData.name.' .. g_languageShort);
+function VehicleSort:getName(obj, sFallback)
+  local nam = getXMLString(obj.xmlFile, 'vehicle.storeData.name.' .. g_languageShort);
   if nam == nil then
-    nam = getXMLString(xmlFile, 'vehicle.storeData.name');
+    nam = getXMLString(obj.xmlFile, 'vehicle.storeData.name');
   end;
   if nam ~= nil then
-    nam = VehicleSort:getTrans(nam, xmlFile, 'vehicle.storeData.name');
+    nam = VehicleSort:getTrans(obj, nam, 'vehicle.storeData.name');
   else
     if nam == nil then
-      nam = getXMLString(xmlFile, 'vehicle.name.' .. g_languageShort);
+      nam = getXMLString(obj.xmlFile, 'vehicle.name.' .. g_languageShort);
     end;
     if nam == nil then
-      nam = getXMLString(xmlFile, 'vehicle.name');
+      nam = getXMLString(obj.xmlFile, 'vehicle.name');
     end;
     if nam ~= nil then
-      nam = VehicleSort:getTrans(nam, xmlFile, 'vehicle.name');
+      nam = VehicleSort:getTrans(obj, nam, 'vehicle.name');
     end;
   end;
   if nam == nil or nam == '' then
-    nam = getXMLString(xmlFile, 'vehicle#type');
+    nam = getXMLString(obj.xmlFile, 'vehicle#type');
     if nam ~= nil then
-      nam = VehicleSort:getTrans(nam, xmlFile, 'vehicle#type');
+      nam = VehicleSort:getTrans(obj, nam, 'vehicle#type');
     end;
   end;
   if nam == nil or nam == '' then
@@ -406,8 +406,8 @@ function VehicleSort:getName(xmlFile, sFallback)
   end;
 end
 
-function VehicleSort:getNameBrand(xmlFile)
-  local val = Utils.getNoNil(getXMLString(xmlFile, 'vehicle.storeData.brand'), 'LIZARD');
+function VehicleSort:getNameBrand(obj)
+  local val = Utils.getNoNil(getXMLString(obj.xmlFile, 'vehicle.storeData.brand'), 'LIZARD');
   if BrandUtil[val] ~= nil and BrandUtil.brandIndexToDesc ~= nil then
     local nam = BrandUtil.brandIndexToDesc[BrandUtil[val]];
     if nam ~= nil and nam.nameI18N ~= nil then
@@ -491,12 +491,18 @@ function VehicleSort:getTextSize()
   end;
 end
 
-function VehicleSort:getTrans(val, xmlFile, key) -- some mods have xml that is formatted differently, so this function attempts to compensate 
+function VehicleSort:getTrans(obj, val, key) -- some mods have xml that is formatted differently, so this function attempts to compensate 
   if val:sub(1, 6) == '$l10n_' then
-    if g_i18n:hasText(val:sub(7)) then
-      return g_i18n:getText(val:sub(7));
+    local str = val:sub(7);
+    if g_i18n:hasText(str) then
+      VehicleSort:dp(string.format('Found l10n value for [%s] via g_i18n', str), 'VehicleSort:getTrans');
+      return g_i18n:getText(str);
     else
-      return Utils.getXMLI18N(xmlFile, key, '', '', self.customEnvironment);    
+      str = Utils.getXMLI18N(obj.xmlFile, key, '', '', obj.customEnvironment, true); --TODO determine last param
+      if str ~= nil and str ~= '' then
+        VehicleSort:dp(string.format('Found translated value for xml path [%s] via getXMLI18N: [%s]', key, str), 'VehicleSort:getTrans');
+        return str;
+      end;
     end;
   end;
   return val;
@@ -883,8 +889,8 @@ function VehicleSort.loadAttachable(self, savegame)
   if self.vs == nil then
     self.vs = {};
   end;
-  self.vs.brand = VehicleSort:getNameBrand(self.xmlFile);
-  self.vs.name = VehicleSort:getName(self.xmlFile, 'Attachable');
+  self.vs.brand = VehicleSort:getNameBrand(self);
+  self.vs.name = VehicleSort:getName(self, 'Attachable');
   VehicleSort:dp(string.format('Loaded attachable name [%s], brand [%s]', tostring(self.vs.name), tostring(self.vs.brand)), 'VehicleSort.loadAttachable');
 end
 if g_dedicatedServerInfo == nil then -- function only needed by players, as attachable objects do not need persistent IDs
@@ -897,10 +903,10 @@ function VehicleSort.loadSteerable(self, savegame)
   end;
   if g_dedicatedServerInfo == nil then
     if self.vs.brand == nil then
-      self.vs.brand = VehicleSort:getNameBrand(self.xmlFile);
+      self.vs.brand = VehicleSort:getNameBrand(self);
     end;
     if self.vs.name == nil then
-      self.vs.name = VehicleSort:getName(self.xmlFile, 'Steerable');
+      self.vs.name = VehicleSort:getName(self, 'Steerable');
     end;
   end;
   local dbg = 'Loaded steerable';
