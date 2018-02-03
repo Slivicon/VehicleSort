@@ -218,6 +218,7 @@ function VehicleSort:drawList()
       local lns = {};
       local ind = #t;
       local ln = t[ind];
+      VehicleSort.bgW = math.max(VehicleSort.bgW, w + VehicleSort.tPos.padSides);
       if isMultiCol then
         VehicleSort.bgW = math.max(VehicleSort.bgW, 1 - VehicleSort.tPos.x);
       end;
