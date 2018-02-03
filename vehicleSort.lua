@@ -15,7 +15,8 @@ VehicleSort.config = {
   {'showFillLevels', true},
   {'showPercentages', true},
   {'showEmpty', false},
-  {'smallText', false}
+  {'smallText', false},
+  {'semiTransBg', true}
 };
 
 VehicleSort.tColor = {}; -- text colours
@@ -50,10 +51,9 @@ function VehicleSort:calcPercentage(curVal, maxVal)
   return (math.floor(per * 10)/10);
 end
 
-function VehicleSort:calcFillLevel(obj, dep)
+function VehicleSort:calcFillLevel(obj)
   local lvl = 0;
   local cap = 0;
-  local depth = Utils.getNoNil(dep, 0) + 1;
   if obj ~= nil then
     if obj.getFillLevel ~= nil then
       lvl = lvl + obj:getFillLevel();
@@ -100,6 +100,7 @@ function VehicleSort:draw()
     return;
   end;
   if VehicleSort.showConfig or VehicleSort.showSteerables then
+    local dbgY = VehicleSort.dbgY;
     VehicleSort.bgY = nil;
     VehicleSort.bgW = nil;
     VehicleSort.bgH = nil;
@@ -107,6 +108,20 @@ function VehicleSort:draw()
       VehicleSort:drawConfig();
     else
       VehicleSort:drawList();
+    end;
+    if VehicleSort.debug then
+      local t = {};
+      table.insert(t, string.format('aspectMultiplier [%f]', VehicleSort.aspectMultiplier));
+      table.insert(t, string.format('borderToTop [%f]', VehicleSort.borderToTop));
+      table.insert(t, string.format('bgX [%f]', VehicleSort.bgX));
+      table.insert(t, string.format('bgW [%f] withAspect [%f]', VehicleSort.bgW, VehicleSort.bgW * VehicleSort.aspectMultiplier));
+      table.insert(t, string.format('bgY [%f] withUiScale [%f]', VehicleSort.bgY, VehicleSort.bgY * g_gameSettings:getValue('uiScale')));
+      table.insert(t, string.format('maxTxtW [%f] withAspect [%f]', VehicleSort.maxTxtW, VehicleSort.maxTxtW * VehicleSort.aspectMultiplier));
+      for k, v in ipairs(t) do
+        VehicleSort.dbgY = VehicleSort.dbgY - VehicleSort.tPos.size - VehicleSort.tPos.spacing;
+        renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, v);
+      end;
+      VehicleSort.dbgY = dbgY;
     end;
   end;
 end
@@ -123,7 +138,7 @@ function VehicleSort:drawConfig()
   local txtOff = g_i18n:getText('vs_off');
   local texts = {};
   table.insert(texts, {xPos, y, size, VehicleSort.tColor.standard, txt}); --heading
-  VehicleSort.bgW = VehicleSort.tPos.columnWidth + (2 * VehicleSort.tPos.spacing) + getTextWidth(VehicleSort.tPos.size, txtOff);
+  VehicleSort.bgW = VehicleSort.tPos.columnWidth + VehicleSort.tPos.padSides + getTextWidth(VehicleSort.tPos.size, txtOff);
   renderText(xPos, y, size, txt);
   size = VehicleSort:getTextSize();
   for i = 1, cCount do --loop through config values
@@ -131,7 +146,7 @@ function VehicleSort:drawConfig()
     if i == VehicleSort.selectedConfigIndex then
       clr = VehicleSort.tColor.selected;
     end;
-    local rText = g_i18n:getText(VehicleSort.config[i][1]) .. ':';
+    local rText = g_i18n:getText(VehicleSort.config[i][1]);
     local state = VehicleSort.config[i][2];
     if state then
       state = txtOn;
@@ -143,14 +158,18 @@ function VehicleSort:drawConfig()
     yPos = yPos - size - VehicleSort.tPos.spacing;
   end;
   VehicleSort.bgY = yPos;
-  VehicleSort.bgH = (y - yPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + (3 * VehicleSort.tPos.spacing);
+  VehicleSort.bgH = (y - yPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + VehicleSort.tPos.padHeight;
   if VehicleSort.bgY ~= nil and VehicleSort.bgW ~=nil and VehicleSort.bgH ~= nil then
-    renderOverlay(VehicleSort.bg, VehicleSort.bgX, VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH); -- dark background
+    VehicleSort:renderBg(VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH);
   end;
   setTextBold(false);
   for k, v in ipairs(texts) do
     setTextColor(unpack(v[4]))
     renderText(v[1], v[2], v[3], v[5]);
+    if VehicleSort.debug and v[4] == VehicleSort.tColor.selected then
+      VehicleSort.dbgY = VehicleSort.dbgY - VehicleSort.tPos.size - VehicleSort.tPos.spacing;
+      renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, string.format('selected textWidth [%f] colWidth [%f]', getTextWidth(v[3], v[5]), VehicleSort.tPos.columnWidth));
+    end;
   end;
   setTextColor(unpack(VehicleSort.tColor.standard));
 end
@@ -169,10 +188,9 @@ function VehicleSort:drawList()
   local txt = 'VehicleSort';
   local texts = {};
   local bold = false;
-  local padSides = (2 * VehicleSort.tPos.spacing);
   table.insert(texts, {xPos, y, size, bold, VehicleSort.tColor.standard, txt}); --heading
   VehicleSort.bgY = y - VehicleSort.tPos.spacing;
-  VehicleSort.bgW = getTextWidth(size, txt) + padSides;
+  VehicleSort.bgW = getTextWidth(size, txt) + VehicleSort.tPos.padSides;
   size = VehicleSort:getTextSize();
   local chk = yPos + size + VehicleSort.tPos.spacing;
   for i = 1, cnt do --loop through lines to see if there will be multiple columns needed
@@ -191,35 +209,43 @@ function VehicleSort:drawList()
       local w = getTextWidth(size, txt);
       local lns = {};
       local ind = #t;
-      local ln = '';
+      local ln = t[ind];
       if isMultiCol then
         VehicleSort.bgW = math.max(VehicleSort.bgW, 1 - VehicleSort.tPos.x);
       end;
-      while isMultiCol and (w > VehicleSort.tPos.columnWidth) do -- wrap text wider than the column to additional lines if multi-column
-        if getTextWidth(size, ln) > VehicleSort.tPos.columnWidth then
+      while isMultiCol and (w >= VehicleSort.maxTxtW) and ind > 0 do -- wrap text wider than the column to additional lines if multi-column
+        if getTextWidth(size, ln) >= VehicleSort.maxTxtW then
           table.insert(lns, 1, ln);
-          ln = t[ind];
+          ln = t[ind - 1];
         else
-          ln = t[ind] .. ln; 
+          if ind > 1 then
+            if getTextWidth(size, t[ind - 1] .. ln) >= VehicleSort.maxTxtW then
+              table.insert(lns, 1, ln);
+              ln = t[ind - 1];
+            else
+              ln = t[ind - 1] .. ln;
+            end;
+          else
+            table.insert(lns, 1, ln);
+          end;
         end;
         table.remove(t, ind);
         ind = #t;
         txt = table.concat(t);
         w = getTextWidth(size, txt);
-        VehicleSort.bgW = math.max(VehicleSort.bgW, w + padSides);
-      end;
-      if string.len(ln) > 0 then -- add leftover line to wrapped lines table
-        table.insert(lns, 1, ln);
+        VehicleSort.bgW = math.max(VehicleSort.bgW, w + VehicleSort.tPos.padSides);
       end;
       bold = veh.isControlled and (not g_currentMission.missionDynamicInfo.isMultiplayer or veh.controllerName == g_currentMission.missionInfo.playerName);
-      table.insert(texts, {xPos, yPos, size, bold, clr, txt});
-      VehicleSort.bgW = math.max(VehicleSort.bgW, w + padSides);
+      if string.len(txt) > 0 then
+        table.insert(texts, {xPos, yPos, size, bold, clr, txt});
+      end;
+      VehicleSort.bgW = math.max(VehicleSort.bgW, w + VehicleSort.tPos.padSides);
       if #lns > 0 then -- add any wrapped lines to the text table
         for k, v in ipairs(lns) do
           yPos = yPos - size - VehicleSort.tPos.spacing;
           local x = xPos + VehicleSort.tPos.spacing;
           table.insert(texts, {x, yPos, size, bold, clr, v});
-          VehicleSort.bgW = math.max(VehicleSort.bgW, getTextWidth(size, v) + padSides);
+          VehicleSort.bgW = math.max(VehicleSort.bgW, getTextWidth(size, v) + VehicleSort.tPos.padSides);
         end;
       end;
       yPos = yPos - size - VehicleSort.tPos.spacing;
@@ -232,14 +258,18 @@ function VehicleSort:drawList()
       isMultiCol = true;
     end;
   end;
-  VehicleSort.bgH = (y - bgPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + (3 * VehicleSort.tPos.spacing);
+  VehicleSort.bgH = (y - bgPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + VehicleSort.tPos.padHeight;
   if VehicleSort.bgY ~= nil and VehicleSort.bgW ~=nil and VehicleSort.bgH ~= nil then
-    renderOverlay(VehicleSort.bg, VehicleSort.bgX, VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH); --dark background
+    VehicleSort:renderBg(VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH);
   end;
   for k, v in ipairs(texts) do
     setTextBold(v[4]);
     setTextColor(unpack(v[5]));
     renderText(v[1], v[2], v[3], v[6]);
+    if VehicleSort.debug and v[5] == VehicleSort.tColor.selected then
+      VehicleSort.dbgY = VehicleSort.dbgY - VehicleSort.tPos.size - VehicleSort.tPos.spacing;
+      renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, string.format('selected textWidth [%f] colWidth [%f]', getTextWidth(v[3], v[6]), VehicleSort.tPos.columnWidth));
+    end;
   end;
   setTextBold(false);
   setTextColor(unpack(VehicleSort.tColor.standard));
@@ -314,20 +344,20 @@ function VehicleSort:getFullVehicleName(index)
   elseif VehicleSort.config[3][2] then -- Show brand
     nam = nam .. string.format('%s ', veh.vs.brand);
   end;
-  nam = nam .. veh.vs.name;
+  nam = nam .. string.format('%s ', veh.vs.name);
   if VehicleSort.config[4][2] then -- Show type
     if veh.typeDesc ~= nil then
-      nam = nam .. string.format(' [%s]', veh.typeDesc);
+      nam = nam .. string.format('[%s] ', veh.typeDesc);
     end;
   end;
   table.insert(ret, nam .. VehicleSort:getFillDisplay(veh));
   if not VehicleSort:isTrain(veh) and not VehicleSort:isCrane(veh) then
     local imp = veh.attachedImplements[1];
     if (imp ~= nil and imp.object ~= nil) then
-      table.insert(ret, string.format(' %s %s%s', g_i18n:getText('with'), VehicleSort:getAttachment(imp.object, 1), VehicleSort:getFillDisplay(imp.object)));
+      table.insert(ret, string.format('%s %s%s ', g_i18n:getText('with'), VehicleSort:getAttachment(imp.object, 1), VehicleSort:getFillDisplay(imp.object)));
       imp = veh.attachedImplements[2];
       if (imp ~= nil and imp.object ~= nil) then -- second attachment
-        table.insert(ret, string.format(' & %s%s', VehicleSort:getAttachment(imp.object, 2), VehicleSort:getFillDisplay(imp.object)));
+        table.insert(ret, string.format('& %s%s ', VehicleSort:getAttachment(imp.object, 2), VehicleSort:getFillDisplay(imp.object)));
       end;
     end;
   end;
@@ -339,19 +369,23 @@ function VehicleSort:getName(xmlFile, sFallback)
   if nam == nil then
     nam = getXMLString(xmlFile, 'vehicle.storeData.name');
   end;
-  if nam == nil then
-    nam = getXMLString(xmlFile, 'vehicle.name.' .. g_languageShort);
-  end;
-  if nam == nil then
-    nam = getXMLString(xmlFile, 'vehicle.name');
-  end;
   if nam ~= nil then
-    nam = VehicleSort:getTrans(nam, 'vehicle.name');
+    nam = VehicleSort:getTrans(xmlFile, 'vehicle.storeData.name');
+  else
+    if nam == nil then
+      nam = getXMLString(xmlFile, 'vehicle.name.' .. g_languageShort);
+    end;
+    if nam == nil then
+      nam = getXMLString(xmlFile, 'vehicle.name');
+    end;
+    if nam ~= nil then
+      nam = VehicleSort:getTrans(xmlFile, 'vehicle.name');
+    end;
   end;
   if nam == nil or nam == '' then
     nam = getXMLString(xmlFile, 'vehicle#type');
     if nam ~= nil then
-      nam = VehicleSort:getTrans(nam, 'vehicle#type');
+      nam = VehicleSort:getTrans(xmlFile, 'vehicle#type');
     end;
   end;
   if nam == nil or nam == '' then
@@ -424,17 +458,6 @@ function VehicleSort:getOrder(saved)
   return ret;
 end
 
-function VehicleSort:getSteerableByVsId(vsid)
-  for k, v in ipairs(g_currentMission.steerables) do
-    VehicleSort:dp(string.format('Looking for vsid [%d] in g_currentMission.steerables', vsid), 'VehicleSort:getSteerableByVsId');
-    if vsid == v.vs.id then
-      VehicleSort:dp(string.format('found matching vsid belonging to steerable id [%d]', v.id), 'VehicleSort:getSteerableByVsId');
-      return v;
-    end;
-  end;
-  return nil;
-end
-
 function VehicleSort:getTextColor(ind, veh)
   if ind == VehicleSort.selectedIndex then
     if VehicleSort.selectedLock then
@@ -457,15 +480,8 @@ function VehicleSort:getTextSize()
   end;
 end
 
-function VehicleSort:getTrans(val, key)
-  if val:sub(1, 6) == '$l10n_' then
-    if g_i18n:hasText(val:sub(7)) then
-      return g_i18n:getText(val:sub(7));
-    else
-      return Utils.getXMLI18N(xmlFile, key, '', '', self.customEnvironment);    
-    end;
-  end;
-  return val;
+function VehicleSort:getTrans(xmlFile, key)
+  return Utils.getXMLI18N(xmlFile, key, '', '', self.customEnvironment);    
 end
 
 function VehicleSort:getUniqueId(id)
@@ -508,16 +524,26 @@ function VehicleSort:init()
     VehicleSort:dp('Skipping undesired initialization on dedicated server.', 'VehicleSort:init');
     return;
   end;
+  VehicleSort.aspectMultiplier = g_screenAspectRatio / 1.7777777777778; --credit: TyKonKet
+  VehicleSort.dbgX = 0.01;
+  VehicleSort.dbgY = 0.5 * VehicleSort.aspectMultiplier;
   VehicleSort.tPos = {};
   VehicleSort.tPos.x = g_currentMission.inGameMessage.posX;  -- x Position of Textfield, originally hardcoded 0.3
   VehicleSort.tPos.y = g_currentMission.tutorialStatusBar.y;  -- y Position of Textfield, originally hardcoded 0.9
-  VehicleSort.tPos.yOffset = 0.007; -- y Position offset for headings TODO dynamic
+  VehicleSort.tPos.yOffset = g_currentMission.cruiseControlTextOffsetY * 1.5; -- y Position offset for headings, originally hardcoded 0.007
   VehicleSort.tPos.size = g_currentMission.helpBoxTextSize;  -- TextSize, originally hardcoded 0.018
-  VehicleSort.tPos.sizeIncr = 0.005; -- Text size increase for headings TODO dynamic
+  VehicleSort.tPos.sizeIncr = g_currentMission.cruiseControlTextOffsetY; -- Text size increase for headings
   VehicleSort.tPos.sizeSmall = g_currentMission.timeScaleTextSize; -- smallest default hud text size
   VehicleSort.tPos.spacing = g_currentMission.cruiseControlTextOffsetY;  -- Spacing between lines, originally hardcoded 0.005
-  VehicleSort.tPos.columnWidth = ((1 - VehicleSort.tPos.x) / 2) - (3 * VehicleSort.tPos.spacing);
+  VehicleSort.tPos.padHeight = 3 * VehicleSort.tPos.spacing;
+  VehicleSort.tPos.padSides = 2 * VehicleSort.tPos.spacing;
+  VehicleSort.tPos.columnWidth = (((1 - VehicleSort.tPos.x) / 2) - VehicleSort.tPos.padSides) * VehicleSort.aspectMultiplier;
   VehicleSort.tPos.alignment = RenderText.ALIGN_LEFT;  -- Text Alignment
+  if g_seasons ~= nil then
+    VehicleSort:dp('Seasons mod detected. Lowering VehicleSort display to below the seasons weather display to avoid overlap', 'VehicleSort:init');
+    VehicleSort.tPos.y = VehicleSort.tPos.y - (6 * VehicleSort.tPos.size) - (6 * VehicleSort.tPos.spacing);
+  end;
+  VehicleSort:dp(VehicleSort.tPos, 'VehicleSort:init', 'tPos');
   VehicleSort.borderToTop = 1 - VehicleSort.tPos.y;
   VehicleSort.userPath = getUserProfileAppPath();
   VehicleSort.saveBasePath = VehicleSort.userPath .. 'vehicleSort/';
@@ -531,9 +557,16 @@ function VehicleSort:init()
   VehicleSort.xmlFilename = VehicleSort.savePath .. 'v_order.xml';
   VehicleSort:loadVehicleOrder();
   VehicleSort.bg = createImageOverlay('dataS2/menu/blank.png'); --credit: Decker_MMIV, VehicleGroupsSwitcher mod
-  setOverlayColor(VehicleSort.bg, 0, 0, 0, 0.8);
   VehicleSort.bgX = VehicleSort.tPos.x - VehicleSort.tPos.spacing;
-  VehicleSort:dp('Initialized.', 'VehicleSort:init');
+  VehicleSort.maxTxtW = VehicleSort.tPos.columnWidth - VehicleSort.tPos.padSides;
+  VehicleSort:dp(string.format('Initialized aspectMultiplier [%f] borderToTop [%f] userPath [%s] saveBasePath [%s] savePath [%s] bgX [%f] maxTxtW [%f]',
+    VehicleSort.aspectMultiplier,
+    VehicleSort.borderToTop,
+    tostring(VehicleSort.userPath),
+    tostring(VehicleSort.saveBasePath),
+    tostring(VehicleSort.savePath),
+    VehicleSort.bgX,
+    VehicleSort.maxTxtW), 'VehicleSort:init');
 end
 
 function VehicleSort:isCrane(veh)
@@ -613,7 +646,7 @@ function VehicleSort:moveDown()
   if VehicleSort.selectedIndex > #g_currentMission.steerables then
     VehicleSort.selectedIndex = 1;
   end;
-  if VehicleSort:isHidden(VehicleSort.userOrder[VehicleSort.selectedIndex]) then
+  if VehicleSort:isHidden(g_currentMission.steerables[VehicleSort.selectedIndex]) then
     VehicleSort:moveDown();
   end;
   if VehicleSort.selectedLock then
@@ -627,12 +660,21 @@ function VehicleSort:moveUp()
   if VehicleSort.selectedIndex < 1 then
     VehicleSort.selectedIndex = #g_currentMission.steerables;
   end;
-  if VehicleSort:isHidden(VehicleSort.userOrder[VehicleSort.selectedIndex]) then
+  if VehicleSort:isHidden(g_currentMission.steerables[VehicleSort.selectedIndex]) then
     VehicleSort:moveUp();
   end;
   if VehicleSort.selectedLock then
     VehicleSort:reSort(oldIndex, VehicleSort.selectedIndex);
   end;
+end
+
+function VehicleSort:renderBg(y, w, h)
+  local bgTrans = 0.8;
+  if not VehicleSort.config[10][2] then
+    bgTrans = 1.0;
+  end;
+  setOverlayColor(VehicleSort.bg, 0, 0, 0, bgTrans);
+  renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h * g_gameSettings:getValue('uiScale')); -- dark background
 end
 
 function VehicleSort:reset()
@@ -805,11 +847,9 @@ function VehicleSort.loadAttachable(self, savegame)
   if self.vs == nil then
     self.vs = {};
   end;
-  if g_dedicatedServerInfo == nil then --dedicated server does not need to track brand and name
-    self.vs.brand = VehicleSort:getNameBrand(self.xmlFile);
-    self.vs.name = VehicleSort:getName(self.xmlFile, 'Attachable');
-    VehicleSort:dp(string.format('Loaded attachable name [%s], brand [%s]', tostring(self.vs.name), tostring(self.vs.brand)), 'VehicleSort.loadAttachable');
-  end;
+  self.vs.brand = VehicleSort:getNameBrand(self.xmlFile);
+  self.vs.name = VehicleSort:getName(self.xmlFile, 'Attachable');
+  VehicleSort:dp(string.format('Loaded attachable name [%s], brand [%s]', tostring(self.vs.name), tostring(self.vs.brand)), 'VehicleSort.loadAttachable');
 end
 if g_dedicatedServerInfo == nil then -- function only needed by players, as attachables do not need persistent IDs
   Attachable.postLoad = Utils.appendedFunction(Attachable.postLoad, VehicleSort.loadAttachable);
