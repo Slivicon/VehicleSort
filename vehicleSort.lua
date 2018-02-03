@@ -208,6 +208,7 @@ function VehicleSort:drawList()
     end;
   end;
   local isMultiCol = chk < VehicleSort.borderToTop;
+  setTextBold(true); -- for width checks, to compensate for increased width when the line is bold
   for i = 1, cnt do
     local veh = g_currentMission.steerables[i];
     if not VehicleSort:isHidden(veh) then
@@ -267,6 +268,7 @@ function VehicleSort:drawList()
       isMultiCol = true;
     end;
   end;
+  setTextBold(false);
   VehicleSort.bgH = (y - bgPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + VehicleSort.tPos.padHeight;
   if VehicleSort.bgY ~= nil and VehicleSort.bgW ~=nil and VehicleSort.bgH ~= nil then
     VehicleSort:renderBg(VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH);
