@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
     <author>Dschonny, Slivicon</author>
-    <version>2.0.0.0</version>
+    <version>2.1.0.0</version>
     <title>
         <de>VehicleSort</de>
         <en>VehicleSort</en>
@@ -26,6 +26,14 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
+ v2.1.0.0 Slivicon
+   Behebung eines Fehlers, der beim Bestimmen des Fahrzeugnamens zu Fehlern führte
+   Fehler behoben, der bei einigen Bildschirmauflösungs-Seitenverhältnissen unerwünschte Text- und Überlagerungsdimensionen verursachte
+   Fehler behoben, bei dem Zugkrane immer noch als Teil der Auswahlliste betrachtet wurden, während sie nicht sichtbar waren
+   Neue Konfigurationsoption zum Festlegen der Hintergrundtransparenzstufe
+   Verbesserte Textumbruch-Bestimmung
+   Ungenutzter Code bereinigt
+   Optimierter Code
  v2.0.0.0 Slivicon
    Meistens neu geschriebenen Code
    Neues persistentes eindeutiges ID-System zur Aufrechterhaltung der Fahrzeugreihenfolge zwischen den Sitzungen
@@ -86,6 +94,14 @@ If the player is in a vehicle it will appear as bold in the list.
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
 
 Change Log:
+ v2.1.0.0 Slivicon
+   Fix bug causing errors while determining vehicle name
+   Fix bug causing undesired text and overlay dimensions on some screen resolution aspect ratios
+   Fix bug where train cranes were still being considered part of the selection list while hidden from view
+   New config option to set background alpha transparency level
+   Improved text wrapping determination
+   Cleaned up unused code
+   Optimized code
  v2.0.0.0 Slivicon
    Mostly re-written code
    New persistent unique ID system to help maintain vehicle order between sessions
@@ -146,6 +162,14 @@ Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
 Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
 
 Journal des changements:
+ v2.1.0.0 Slivicon
+   Correction d'un bug causant des erreurs lors de la détermination du nom du véhicule
+   Correction d'un bug causant des dimensions de texte et de superposition indésirables sur certains formats d'écran de résolution d'écran
+   Correction d'un bug où les grues de train étaient toujours considérées comme faisant partie de la liste de sélection alors qu'elles étaient cachées de la vue
+   Nouvelle option de configuration pour définir le niveau de transparence alpha en arrière-plan
+   Détermination de l'habillage de texte améliorée
+   Nettoyage du code inutilisé
+   Code optimisé
  v2.0.0.0 Slivicon
    Code principalement réécrit
    Nouveau système d'identification unique persistant pour aider à maintenir l'ordre du véhicule entre les sessions
@@ -290,6 +314,11 @@ Journal des changements:
 			<de>Kleinere Textgröße</de>
 			<en>Smaller text size</en>
             <fr>Taille de texte plus petite</fr>
+		</text>
+		<text name="bgTrans">
+			<de>Hintergrund Alpha Transparenz</de>
+			<en>Background alpha transparency</en>
+            <fr>Fond alpha transparence</fr>
 		</text>
 		<text name="vs_on">
 			<de>An</de>

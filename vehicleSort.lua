@@ -16,7 +16,7 @@ VehicleSort.config = {
   {'showPercentages', true},
   {'showEmpty', false},
   {'smallText', false},
-  {'semiTransBg', true}
+  {'bgTrans', 0.8}
 };
 
 VehicleSort.tColor = {}; -- text colours
@@ -148,10 +148,14 @@ function VehicleSort:drawConfig()
     end;
     local rText = g_i18n:getText(VehicleSort.config[i][1]);
     local state = VehicleSort.config[i][2];
-    if state then
-      state = txtOn;
+    if i ~= 10 then
+      if state then
+        state = txtOn;
+      else
+        state = txtOff;
+      end;
     else
-      state = txtOff;
+      state = string.format('%.1f', state);
     end;
     table.insert(texts, {xPos, yPos, size, clr, rText}); --config definition line
     table.insert(texts, {xPos + VehicleSort.tPos.columnWidth, yPos, size, clr, state}); --config value
@@ -629,7 +633,13 @@ function VehicleSort:loadVehicleOrder()
   if hasXMLProperty(VehicleSort.saveFile, VehicleSort.keyCon) then
     VehicleSort:dp('Config file found.', 'VehicleSort:loadVehicleOrder');
     for i = 1, #VehicleSort.config do
-      local b = getXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1] );
+      if i == 10 then
+        local flt = getXMLFloat(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]);
+        if flt ~= nil then
+          VehicleSort.config[i][2] = flt;
+        end;
+      end;
+      local b = getXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]);
       if b ~= nil then
         VehicleSort.config[i][2] = b;
       end;
@@ -669,12 +679,11 @@ function VehicleSort:moveUp()
 end
 
 function VehicleSort:renderBg(y, w, h)
-  local bgTrans = 0.8;
-  if not VehicleSort.config[10][2] then
-    bgTrans = 1.0;
+  local alpha = VehicleSort.config[10][2];
+  if alpha >= 0.1 then
+    setOverlayColor(VehicleSort.bg, 0, 0, 0, alpha);
+    renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h * g_gameSettings:getValue('uiScale')); -- dark background
   end;
-  setOverlayColor(VehicleSort.bg, 0, 0, 0, bgTrans);
-  renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h * g_gameSettings:getValue('uiScale')); -- dark background
 end
 
 function VehicleSort:reset()
@@ -711,7 +720,11 @@ function VehicleSort:saveVehicleOrder()
   VehicleSort.saveFile = createXMLFile('VehicleSort.saveFile', VehicleSort.xmlFilename, VehicleSort.key);
   setXMLString(VehicleSort.saveFile, VehicleSort.key .. VehicleSort.xmlAttrMapId, g_currentMission.missionInfo.mapId);
   for i = 1, #VehicleSort.config do
-    setXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
+    if i == 10 then
+      setXMLFloat(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
+    else
+      setXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
+    end;
   end;
   for k, v in ipairs(VehicleSort.userOrder) do
     VehicleSort:dp(string.format('Saving vehicle index [%d], vsid [%d], parked [%s]', k, v.id, tostring(v.isParked)), 'VehicleSort:saveVehicleOrder');
@@ -761,7 +774,14 @@ function VehicleSort:update(dt)
         VehicleSort.selectedConfigIndex = 1;
       end;
     elseif InputBinding.hasEvent(InputBinding.vs_lockListItem) then
-      VehicleSort.config[VehicleSort.selectedConfigIndex][2] = not VehicleSort.config[VehicleSort.selectedConfigIndex][2];
+      if VehicleSort.selectedConfigIndex == 10 then
+        VehicleSort.config[VehicleSort.selectedConfigIndex][2] = VehicleSort.config[VehicleSort.selectedConfigIndex][2] + 0.1;
+        if VehicleSort.config[VehicleSort.selectedConfigIndex][2] > 1 then
+          VehicleSort.config[VehicleSort.selectedConfigIndex][2] = 0;
+        end;
+      else
+        VehicleSort.config[VehicleSort.selectedConfigIndex][2] = not VehicleSort.config[VehicleSort.selectedConfigIndex][2];
+      end;
       VehicleSort.saved = false;
     end;
   end;
