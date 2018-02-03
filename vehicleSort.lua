@@ -6,6 +6,8 @@
 
 VehicleSort ={};
 
+VehicleSort.bgTransDef = 0.8;
+
 VehicleSort.config = {
   {'showTrain', true},
   {'showCrane', false},
@@ -16,7 +18,7 @@ VehicleSort.config = {
   {'showPercentages', true},
   {'showEmpty', false},
   {'smallText', false},
-  {'bgTrans', 0.8}
+  {'bgTrans', VehicleSort.bgTransDef}
 };
 
 VehicleSort.tColor = {}; -- text colours
@@ -154,8 +156,10 @@ function VehicleSort:drawConfig()
       else
         state = txtOff;
       end;
-    else
+    elseif type(state) == 'number' then
       state = string.format('%.1f', state);
+    else
+      state = tostring(VehicleSort.bgTransDef);
     end;
     table.insert(texts, {xPos, yPos, size, clr, rText}); --config definition line
     table.insert(texts, {xPos + VehicleSort.tPos.columnWidth, yPos, size, clr, state}); --config value
@@ -169,10 +173,10 @@ function VehicleSort:drawConfig()
   setTextBold(false);
   for k, v in ipairs(texts) do
     setTextColor(unpack(v[4]))
-    renderText(v[1], v[2], v[3], v[5]);
+    renderText(v[1], v[2], v[3], tostring(v[5]));
     if VehicleSort.debug and v[4] == VehicleSort.tColor.selected then
       VehicleSort.dbgY = VehicleSort.dbgY - VehicleSort.tPos.size - VehicleSort.tPos.spacing;
-      renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, string.format('selected textWidth [%f] colWidth [%f]', getTextWidth(v[3], v[5]), VehicleSort.tPos.columnWidth));
+      renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, string.format('selected textWidth [%f] colWidth [%f]', getTextWidth(v[3], tostring(v[5])), VehicleSort.tPos.columnWidth));
     end;
   end;
   setTextColor(unpack(VehicleSort.tColor.standard));
@@ -374,7 +378,7 @@ function VehicleSort:getName(xmlFile, sFallback)
     nam = getXMLString(xmlFile, 'vehicle.storeData.name');
   end;
   if nam ~= nil then
-    nam = VehicleSort:getTrans(xmlFile, 'vehicle.storeData.name');
+    nam = VehicleSort:getTrans(nam, xmlFile, 'vehicle.storeData.name');
   else
     if nam == nil then
       nam = getXMLString(xmlFile, 'vehicle.name.' .. g_languageShort);
@@ -383,13 +387,13 @@ function VehicleSort:getName(xmlFile, sFallback)
       nam = getXMLString(xmlFile, 'vehicle.name');
     end;
     if nam ~= nil then
-      nam = VehicleSort:getTrans(xmlFile, 'vehicle.name');
+      nam = VehicleSort:getTrans(nam, xmlFile, 'vehicle.name');
     end;
   end;
   if nam == nil or nam == '' then
     nam = getXMLString(xmlFile, 'vehicle#type');
     if nam ~= nil then
-      nam = VehicleSort:getTrans(xmlFile, 'vehicle#type');
+      nam = VehicleSort:getTrans(nam, xmlFile, 'vehicle#type');
     end;
   end;
   if nam == nil or nam == '' then
@@ -484,8 +488,15 @@ function VehicleSort:getTextSize()
   end;
 end
 
-function VehicleSort:getTrans(xmlFile, key)
-  return Utils.getXMLI18N(xmlFile, key, '', '', self.customEnvironment);    
+function VehicleSort:getTrans(val, xmlFile, key) -- some mods have xml that is formatted differently, so this function attempts to compensate 
+  if val:sub(1, 6) == '$l10n_' then
+    if g_i18n:hasText(val:sub(7)) then
+      return g_i18n:getText(val:sub(7));
+    else
+      return Utils.getXMLI18N(xmlFile, key, '', '', self.customEnvironment);    
+    end;
+  end;
+  return val;
 end
 
 function VehicleSort:getUniqueId(id)
@@ -634,14 +645,19 @@ function VehicleSort:loadVehicleOrder()
     VehicleSort:dp('Config file found.', 'VehicleSort:loadVehicleOrder');
     for i = 1, #VehicleSort.config do
       if i == 10 then
-        local flt = getXMLFloat(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]);
-        if flt ~= nil then
-          VehicleSort.config[i][2] = flt;
+        local flt = getXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]); --a dev version had this as boolean, but then changed to float
+        if flt == nil or tonumber(flt) == 0 or tonumber(flt) < 0 or tonumber(flt) > 1 then
+          flt = VehicleSort.bgTransDef;
+        else
+          flt = tonumber(string.format('%.1f', tonumber(flt)));
         end;
-      end;
-      local b = getXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]);
-      if b ~= nil then
-        VehicleSort.config[i][2] = b;
+        VehicleSort.config[i][2] = flt;
+        VehicleSort:dp(string.format('bgTrans value set to [%f]', flt), 'VehicleSort:loadVehicleOrder');
+      else
+        local b = getXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]);
+        if b ~= nil then
+          VehicleSort.config[i][2] = b;
+        end;
       end;
     end;
   end;
@@ -679,11 +695,14 @@ function VehicleSort:moveUp()
 end
 
 function VehicleSort:renderBg(y, w, h)
-  local alpha = VehicleSort.config[10][2];
-  if type(alpha) == 'number' and alpha >= 0.1 then
-    setOverlayColor(VehicleSort.bg, 0, 0, 0, alpha);
-    renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h); -- dark background TODO investigate compensating for g_gameSettings:getValue('uiScale')
-  end;
+  -- local alpha = VehicleSort.config[10][2];
+  -- if type(alpha) == 'boolean' or tonumber(alpha) < 0 or tonumber(alpha) > 1 then
+    -- VehicleSort:dp(string.format('Invalid bgTrans value [%s] detected, using default.', tostring(alpha)), 'VehicleSort:renderBg');
+    -- VehicleSort.config[10][2] = VehicleSort.bgTransDef;
+    -- alpha = VehicleSort.config[10][2];
+  -- end;
+  setOverlayColor(VehicleSort.bg, 0, 0, 0, VehicleSort.config[10][2]);
+  renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h); -- dark background TODO investigate compensating for g_gameSettings:getValue('uiScale')
 end
 
 function VehicleSort:reset()
@@ -721,7 +740,13 @@ function VehicleSort:saveVehicleOrder()
   setXMLString(VehicleSort.saveFile, VehicleSort.key .. VehicleSort.xmlAttrMapId, g_currentMission.missionInfo.mapId);
   for i = 1, #VehicleSort.config do
     if i == 10 then
-      setXMLFloat(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
+      -- local val = VehicleSort.config[i][2];
+      -- if type(val) == 'boolean' then
+        -- val = VehicleSort.bgTransDef;
+      -- else
+        -- val = tonumber(val);
+      -- end;
+      setXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], string.format('%.1f', VehicleSort.config[i][2]));
     else
       setXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
     end;
@@ -775,9 +800,15 @@ function VehicleSort:update(dt)
       end;
     elseif InputBinding.hasEvent(InputBinding.vs_lockListItem) then
       if VehicleSort.selectedConfigIndex == 10 then
+        -- local val = VehicleSort.config[VehicleSort.selectedConfigIndex][2];
+        -- if tonumber(val) == 0 then
+          -- val = VehicleSort.bgTransDef;
+        -- else
+          -- val = tonumber(val);
+        -- end;
         VehicleSort.config[VehicleSort.selectedConfigIndex][2] = VehicleSort.config[VehicleSort.selectedConfigIndex][2] + 0.1;
         if VehicleSort.config[VehicleSort.selectedConfigIndex][2] > 1 then
-          VehicleSort.config[VehicleSort.selectedConfigIndex][2] = 0;
+          VehicleSort.config[VehicleSort.selectedConfigIndex][2] = 0.0;
         end;
       else
         VehicleSort.config[VehicleSort.selectedConfigIndex][2] = not VehicleSort.config[VehicleSort.selectedConfigIndex][2];
