@@ -646,7 +646,7 @@ function VehicleSort:loadVehicleOrder()
     for i = 1, #VehicleSort.config do
       if i == 10 then
         local flt = getXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]); --a dev version had this as boolean, but then changed to float
-        if flt == nil or tonumber(flt) == 0 or tonumber(flt) < 0 or tonumber(flt) > 1 then
+        if flt == nil or flt == 'nil' or tonumber(flt) == 0 or tonumber(flt) < 0 or tonumber(flt) > 1 thenthen
           flt = VehicleSort.bgTransDef;
         else
           flt = tonumber(string.format('%.1f', tonumber(flt)));
