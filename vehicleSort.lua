@@ -680,9 +680,9 @@ end
 
 function VehicleSort:renderBg(y, w, h)
   local alpha = VehicleSort.config[10][2];
-  if alpha >= 0.1 then
+  if type(alpha) == 'number' and alpha >= 0.1 then
     setOverlayColor(VehicleSort.bg, 0, 0, 0, alpha);
-    renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h * g_gameSettings:getValue('uiScale')); -- dark background
+    renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h); -- dark background TODO investigate compensating for g_gameSettings:getValue('uiScale')
   end;
 end
 
