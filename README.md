@@ -14,6 +14,6 @@ NumPad [-] opens config menu
  
 If the player is in a vehicle it will appear as bold in the list.
 
-Original Author v0.1-v0.6 credit: Dschonny
-Original Link: https://www.modhoster.de/mods/vehiclesort
-Further updates developed and published with permission from Dschonny.
+Original Author v0.1-v0.6 credit: Dschonny  
+Original v0.6 Link: https://www.modhoster.de/mods/vehiclesort  
+Further updates developed and published with permission from Dschonny.  
