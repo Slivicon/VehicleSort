@@ -7,6 +7,7 @@
 VehicleSort ={};
 
 VehicleSort.bgTransDef = 0.8;
+VehicleSort.txtSizeDef = 2;
 
 VehicleSort.config = {
   {'showTrain', true},
@@ -17,7 +18,7 @@ VehicleSort.config = {
   {'showFillLevels', true},
   {'showPercentages', true},
   {'showEmpty', false},
-  {'smallText', false},
+  {'txtSize', VehicleSort.txtSizeDef},
   {'bgTrans', VehicleSort.bgTransDef}
 };
 
@@ -114,7 +115,6 @@ function VehicleSort:draw()
     if VehicleSort.debug then
       local t = {};
       table.insert(t, string.format('aspectMultiplier [%f]', VehicleSort.aspectMultiplier));
-      table.insert(t, string.format('borderToTop [%f]', VehicleSort.borderToTop));
       table.insert(t, string.format('bgX [%f]', VehicleSort.bgX));
       table.insert(t, string.format('bgW [%f] withAspect [%f]', VehicleSort.bgW, VehicleSort.bgW * VehicleSort.aspectMultiplier));
       table.insert(t, string.format('bgY [%f] withUiScale [%f]', VehicleSort.bgY, VehicleSort.bgY * g_gameSettings:getValue('uiScale')));
@@ -133,16 +133,14 @@ function VehicleSort:drawConfig()
   local xPos = VehicleSort.tPos.x;
   local yPos = VehicleSort.tPos.y;
   setTextAlignment(VehicleSort.tPos.alignment);
-  local y = yPos + VehicleSort.tPos.size + VehicleSort.tPos.spacing + VehicleSort.tPos.yOffset;
-  local size = VehicleSort:getTextSize() + VehicleSort.tPos.sizeIncr;
+  local size = VehicleSort:getTextSize();
+  local y = yPos + size + VehicleSort.tPos.spacing + VehicleSort.tPos.yOffset;
   local txt = g_i18n:getText('configHeadline');
   local txtOn = g_i18n:getText('vs_on');
   local txtOff = g_i18n:getText('vs_off');
   local texts = {};
-  table.insert(texts, {xPos, y, size, VehicleSort.tColor.standard, txt}); --heading
-  VehicleSort.bgW = VehicleSort.tPos.columnWidth + VehicleSort.tPos.padSides + getTextWidth(VehicleSort.tPos.size, txtOff);
-  renderText(xPos, y, size, txt);
-  size = VehicleSort:getTextSize();
+  table.insert(texts, {xPos, y, size + VehicleSort.tPos.sizeIncr, VehicleSort.tColor.standard, txt}); --heading
+  VehicleSort.bgW = VehicleSort.tPos.columnWidth + VehicleSort.tPos.padSides + getTextWidth(size, txtOff);
   for i = 1, cCount do --loop through config values
     local clr = VehicleSort.tColor.standard;
     if i == VehicleSort.selectedConfigIndex then
@@ -150,23 +148,21 @@ function VehicleSort:drawConfig()
     end;
     local rText = g_i18n:getText(VehicleSort.config[i][1]);
     local state = VehicleSort.config[i][2];
-    if i ~= 10 then
-      if state then
-        state = txtOn;
-      else
-        state = txtOff;
-      end;
-    elseif type(state) == 'number' then
+    if i == 9 then
+      state = string.format('%d', state);
+    elseif i == 10 then
       state = string.format('%.1f', state);
+    elseif state then
+      state = txtOn;
     else
-      state = tostring(VehicleSort.bgTransDef);
+      state = txtOff;
     end;
     table.insert(texts, {xPos, yPos, size, clr, rText}); --config definition line
     table.insert(texts, {xPos + VehicleSort.tPos.columnWidth, yPos, size, clr, state}); --config value
     yPos = yPos - size - VehicleSort.tPos.spacing;
   end;
   VehicleSort.bgY = yPos;
-  VehicleSort.bgH = (y - yPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + VehicleSort.tPos.padHeight;
+  VehicleSort.bgH = (y - yPos) + size + VehicleSort.tPos.yOffset + VehicleSort.tPos.padHeight;
   if VehicleSort.bgY ~= nil and VehicleSort.bgW ~=nil and VehicleSort.bgH ~= nil then
     VehicleSort:renderBg(VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH);
   end;
@@ -187,19 +183,20 @@ function VehicleSort:drawList()
   if cnt == 0 then
     return;
   end;
+  setTextBold(true); -- for width checks, to compensate for increased width when the line is bold
   local xPos = VehicleSort.tPos.x;
   local yPos = VehicleSort.tPos.y;
   local bgPos = yPos;
   setTextAlignment(VehicleSort.tPos.alignment);
-  local y = yPos + VehicleSort.tPos.size + VehicleSort.tPos.spacing + VehicleSort.tPos.yOffset;
-  local size = VehicleSort.getTextSize() + VehicleSort.tPos.sizeIncr;
+  local size = VehicleSort.getTextSize();
+  local y = yPos + size + VehicleSort.tPos.spacing + VehicleSort.tPos.yOffset;
   local txt = 'VehicleSort';
   local texts = {};
   local bold = false;
-  table.insert(texts, {xPos, y, size, bold, VehicleSort.tColor.standard, txt}); --heading
+  local minBgW = 0;
+  table.insert(texts, {xPos, y, size + VehicleSort.tPos.sizeIncr, bold, VehicleSort.tColor.standard, txt}); --heading
   VehicleSort.bgY = y - VehicleSort.tPos.spacing;
   VehicleSort.bgW = getTextWidth(size, txt) + VehicleSort.tPos.padSides;
-  size = VehicleSort:getTextSize();
   local chk = yPos + size + VehicleSort.tPos.spacing;
   for i = 1, cnt do --loop through lines to see if there will be multiple columns needed
     local veh = g_currentMission.steerables[i];
@@ -207,22 +204,24 @@ function VehicleSort:drawList()
       chk = chk - size - VehicleSort.tPos.spacing;
     end;
   end;
-  local isMultiCol = chk < VehicleSort.borderToTop;
-  setTextBold(true); -- for width checks, to compensate for increased width when the line is bold
+  local isMultiCol = chk < (size + VehicleSort.tPos.spacing + VehicleSort.tPos.padHeight);
+  local addCol = false;
+  local minY = ((4 * (size + VehicleSort.tPos.spacing)) + VehicleSort.tPos.padHeight);
   for i = 1, cnt do
     local veh = g_currentMission.steerables[i];
     if not VehicleSort:isHidden(veh) then
+      if addCol then
+        minBgW = VehicleSort.bgW;
+        addCol = false;
+        isMultiCol = true;
+      end;
       local clr = VehicleSort:getTextColor(i, veh);
       local t = VehicleSort:getFullVehicleName(i);
       txt = table.concat(t);
-      local w = getTextWidth(size, txt);
+      local w = minBgW + getTextWidth(size, txt);
       local lns = {};
       local ind = #t;
       local ln = t[ind];
-      VehicleSort.bgW = math.max(VehicleSort.bgW, w + VehicleSort.tPos.padSides);
-      if isMultiCol then
-        VehicleSort.bgW = math.max(VehicleSort.bgW, 1 - VehicleSort.tPos.x);
-      end;
       while isMultiCol and (w >= VehicleSort.maxTxtW) and ind > 0 do -- wrap text wider than the column to additional lines if multi-column
         if getTextWidth(size, ln) >= VehicleSort.maxTxtW then
           table.insert(lns, 1, ln);
@@ -242,34 +241,37 @@ function VehicleSort:drawList()
         table.remove(t, ind);
         ind = #t;
         txt = table.concat(t);
-        w = getTextWidth(size, txt);
-        VehicleSort.bgW = math.max(VehicleSort.bgW, w + VehicleSort.tPos.padSides);
+        w = minBgW + getTextWidth(size, txt);
       end;
       bold = veh.isControlled and (not g_currentMission.missionDynamicInfo.isMultiplayer or veh.controllerName == g_currentMission.missionInfo.playerName);
       if string.len(txt) > 0 then
         table.insert(texts, {xPos, yPos, size, bold, clr, txt});
+        yPos = yPos - size - VehicleSort.tPos.spacing;
+        VehicleSort.bgW = math.max(VehicleSort.bgW, minBgW + getTextWidth(size, txt) + VehicleSort.tPos.padSides);
       end;
       VehicleSort.bgW = math.max(VehicleSort.bgW, w + VehicleSort.tPos.padSides);
       if #lns > 0 then -- add any wrapped lines to the text table
         for k, v in ipairs(lns) do
-          yPos = yPos - size - VehicleSort.tPos.spacing;
-          local x = xPos + VehicleSort.tPos.spacing;
-          table.insert(texts, {x, yPos, size, bold, clr, v});
-          VehicleSort.bgW = math.max(VehicleSort.bgW, getTextWidth(size, v) + VehicleSort.tPos.padSides);
+          if string.len(v) > 0 then
+            local x = xPos + VehicleSort.tPos.spacing;
+            table.insert(texts, {x, yPos, size, bold, clr, v});
+            yPos = yPos - size - VehicleSort.tPos.spacing;
+            VehicleSort.bgW = math.max(VehicleSort.bgW, minBgW + getTextWidth(size, v) + VehicleSort.tPos.padSides);
+          end;
         end;
       end;
-      yPos = yPos - size - VehicleSort.tPos.spacing;
       bgPos = math.min(bgPos, yPos);
     end;
-    VehicleSort.bgY = math.min(VehicleSort.bgY, yPos - VehicleSort.tPos.spacing);
-    if yPos < VehicleSort.borderToTop then -- getting near bottom of screen, start a new column
+    if yPos < minY then -- getting near bottom of screen, start a new column
       yPos = VehicleSort.tPos.y;
-      xPos = xPos + VehicleSort.tPos.columnWidth;
-      isMultiCol = true;
+      xPos = xPos + VehicleSort.bgW - minBgW;
+      addCol = true;
     end;
   end;
   setTextBold(false);
-  VehicleSort.bgH = (y - bgPos) + VehicleSort.tPos.size + VehicleSort.tPos.yOffset + VehicleSort.tPos.padHeight;
+  bgPos = bgPos - VehicleSort.tPos.spacing; -- bottom padding
+  VehicleSort.bgY = bgPos;
+  VehicleSort.bgH = (y - bgPos) + size + VehicleSort.tPos.sizeIncr + VehicleSort.tPos.yOffset + VehicleSort.tPos.spacing;
   if VehicleSort.bgY ~= nil and VehicleSort.bgW ~=nil and VehicleSort.bgH ~= nil then
     VehicleSort:renderBg(VehicleSort.bgY, VehicleSort.bgW, VehicleSort.bgH);
   end;
@@ -484,9 +486,16 @@ function VehicleSort:getTextColor(ind, veh)
 end
 
 function VehicleSort:getTextSize()
-  if VehicleSort.config[9][2] then
+  local val = tonumber(VehicleSort.config[9][2]);
+  if val == nil or val < 1 or val > 3 then
+    val = 2;
+  end;
+  if val == 1 then
     return VehicleSort.tPos.sizeSmall;
+  elseif val == 3 then
+    return VehicleSort.tPos.sizeBig;
   else
+    VehicleSort.config[9][2] = 2;
     return VehicleSort.tPos.size;
   end;
 end
@@ -556,11 +565,12 @@ function VehicleSort:init()
   VehicleSort.tPos.y = g_currentMission.tutorialStatusBar.y;  -- y Position of Textfield, originally hardcoded 0.9
   VehicleSort.tPos.yOffset = g_currentMission.cruiseControlTextOffsetY * 1.5; -- y Position offset for headings, originally hardcoded 0.007
   VehicleSort.tPos.size = g_currentMission.helpBoxTextSize;  -- TextSize, originally hardcoded 0.018
-  VehicleSort.tPos.sizeIncr = g_currentMission.cruiseControlTextOffsetY; -- Text size increase for headings
+  VehicleSort.tPos.sizeBig = g_currentMission.ingameNotificationTextSize;
   VehicleSort.tPos.sizeSmall = g_currentMission.timeScaleTextSize; -- smallest default hud text size
+  VehicleSort.tPos.sizeIncr = g_currentMission.cruiseControlTextOffsetY; -- Text size increase for headings
   VehicleSort.tPos.spacing = g_currentMission.cruiseControlTextOffsetY;  -- Spacing between lines, originally hardcoded 0.005
-  VehicleSort.tPos.padHeight = 3 * VehicleSort.tPos.spacing;
-  VehicleSort.tPos.padSides = 2 * VehicleSort.tPos.spacing;
+  VehicleSort.tPos.padHeight = 2 * VehicleSort.tPos.spacing;
+  VehicleSort.tPos.padSides = VehicleSort.tPos.padHeight;
   VehicleSort.tPos.columnWidth = (((1 - VehicleSort.tPos.x) / 2) - VehicleSort.tPos.padSides) * VehicleSort.aspectMultiplier;
   VehicleSort.tPos.alignment = RenderText.ALIGN_LEFT;  -- Text Alignment
   if g_seasons ~= nil then
@@ -568,7 +578,6 @@ function VehicleSort:init()
     VehicleSort.tPos.y = VehicleSort.tPos.y - (6 * VehicleSort.tPos.size) - (6 * VehicleSort.tPos.spacing);
   end;
   VehicleSort:dp(VehicleSort.tPos, 'VehicleSort:init', 'tPos');
-  VehicleSort.borderToTop = 1 - VehicleSort.tPos.y;
   VehicleSort.userPath = getUserProfileAppPath();
   VehicleSort.saveBasePath = VehicleSort.userPath .. 'vehicleSort/';
   if g_currentMission.missionDynamicInfo.serverAddress ~= nil then --multi-player game and player is not the host (dedi already handled above)
@@ -583,9 +592,8 @@ function VehicleSort:init()
   VehicleSort.bg = createImageOverlay('dataS2/menu/blank.png'); --credit: Decker_MMIV, VehicleGroupsSwitcher mod
   VehicleSort.bgX = VehicleSort.tPos.x - VehicleSort.tPos.spacing;
   VehicleSort.maxTxtW = VehicleSort.tPos.columnWidth - VehicleSort.tPos.padSides;
-  VehicleSort:dp(string.format('Initialized aspectMultiplier [%f] borderToTop [%f] userPath [%s] saveBasePath [%s] savePath [%s] bgX [%f] maxTxtW [%f]',
+  VehicleSort:dp(string.format('Initialized aspectMultiplier [%f] userPath [%s] saveBasePath [%s] savePath [%s] bgX [%f] maxTxtW [%f]',
     VehicleSort.aspectMultiplier,
-    VehicleSort.borderToTop,
     tostring(VehicleSort.userPath),
     tostring(VehicleSort.saveBasePath),
     tostring(VehicleSort.savePath),
@@ -653,7 +661,16 @@ function VehicleSort:loadVehicleOrder()
   if hasXMLProperty(VehicleSort.saveFile, VehicleSort.keyCon) then
     VehicleSort:dp('Config file found.', 'VehicleSort:loadVehicleOrder');
     for i = 1, #VehicleSort.config do
-      if i == 10 then
+      if i == 9 then
+        local int = getXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]); --a dev version had this as boolean, but then changed to int
+        if tonumber(int) == nil or tonumber(int) <= 0 or tonumber(int) > 3 then
+          int = VehicleSort.txtSizeDef;
+        else
+          int = math.floor(tonumber(int));
+        end;
+        VehicleSort.config[i][2] = int;
+        VehicleSort:dp(string.format('txtSize value set to [%d]', int), 'VehicleSort:loadVehicleOrder');
+      elseif i == 10 then
         local flt = getXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1]); --a dev version had this as boolean, but then changed to float
         if tonumber(flt) == nil or tonumber(flt) <= 0 or tonumber(flt) > 1 then
           flt = VehicleSort.bgTransDef;
@@ -742,7 +759,9 @@ function VehicleSort:saveVehicleOrder()
   VehicleSort.saveFile = createXMLFile('VehicleSort.saveFile', VehicleSort.xmlFilename, VehicleSort.key);
   setXMLString(VehicleSort.saveFile, VehicleSort.key .. VehicleSort.xmlAttrMapId, g_currentMission.missionInfo.mapId);
   for i = 1, #VehicleSort.config do
-    if i == 10 then
+    if i == 9 then
+      setXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], tostring(VehicleSort.config[i][2]));
+    elseif i == 10 then
       setXMLString(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], string.format('%.1f', VehicleSort.config[i][2]));
     else
       setXMLBool(VehicleSort.saveFile, VehicleSort.keyCon .. '#' .. VehicleSort.config[i][1], VehicleSort.config[i][2]);
@@ -796,7 +815,12 @@ function VehicleSort:update(dt)
         VehicleSort.selectedConfigIndex = 1;
       end;
     elseif InputBinding.hasEvent(InputBinding.vs_lockListItem) then
-      if VehicleSort.selectedConfigIndex == 10 then
+      if VehicleSort.selectedConfigIndex == 9 then
+        VehicleSort.config[VehicleSort.selectedConfigIndex][2] = VehicleSort.config[VehicleSort.selectedConfigIndex][2] + 1;
+        if VehicleSort.config[VehicleSort.selectedConfigIndex][2] > 3 then
+          VehicleSort.config[VehicleSort.selectedConfigIndex][2] = 1;
+        end;
+      elseif VehicleSort.selectedConfigIndex == 10 then
         VehicleSort.config[VehicleSort.selectedConfigIndex][2] = VehicleSort.config[VehicleSort.selectedConfigIndex][2] + 0.1;
         if VehicleSort.config[VehicleSort.selectedConfigIndex][2] > 1 then
           VehicleSort.config[VehicleSort.selectedConfigIndex][2] = 0.0;

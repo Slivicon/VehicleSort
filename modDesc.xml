@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
-    <author>Dschonny, Slivicon</author>
-    <version>2.1.0.0</version>
-    <title>
-        <de>VehicleSort</de>
-        <en>VehicleSort</en>
-        <fr>VehicleSort</fr>
-    </title>
-    <description>
-        <de><![CDATA[
+	<author>Dschonny, Slivicon</author>
+	<version>2.1.0.0</version>
+	<title>
+		<de>VehicleSort</de>
+		<en>VehicleSort</en>
+		<fr>VehicleSort</fr>
+	</title>
+	<description>
+		<de><![CDATA[
 
 Verändere nach Belieben die Reihenfolge, in der du mit der Tab-Taste durch deine Fahrzeuge springst oder wechsel komfortabel über die Fahrzeug-Liste.
 
@@ -26,14 +26,18 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
- v2.1.0.0 Slivicon
+  v2.1.0.0 Slivicon
    Behebung eines Fehlers, der beim Bestimmen des Fahrzeugnamens zu Fehlern führte
    Fehler behoben, der bei einigen Bildschirmauflösungs-Seitenverhältnissen unerwünschte Text- und Überlagerungsdimensionen verursachte
    Fehler behoben, bei dem Zugkrane immer noch als Teil der Auswahlliste betrachtet wurden, während sie nicht sichtbar waren
+   Beheben Sie Fehler mit Duplicate-Überschriftenrendern
    Neue Konfigurationsoption zum Festlegen der Hintergrundtransparenzstufe
+   Neue Konfigurationsoption zum Ändern der Textgröße zwischen 3 Größen
    Verbesserte Textumbruch-Bestimmung
+   Dynamische Größenanpassung von Spaltenbreiten und Hintergrund basierend auf der Größe des Inhalts
    Ungenutzter Code bereinigt
    Optimierter Code
+
  v2.0.0.0 Slivicon
    Meistens neu geschriebenen Code
    Neues persistentes eindeutiges ID-System zur Aufrechterhaltung der Fahrzeugreihenfolge zwischen den Sitzungen
@@ -75,8 +79,8 @@ Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Geneh
    Option zum Anzeigen / Verdecken von Namen anderer Spieler hinzugefügt
    Option hinzugefügt, um Füllstände von Fahrzeugen in der Liste anzuzeigen (Gesamt / Prozentsatz)
 
-     ]]></de>
-        <en><![CDATA[
+	 ]]></de>
+		<en><![CDATA[
 
 Customize the order in which your vehicles are chosen when using the tab-key or switch by navigating through a list.
 
@@ -88,7 +92,7 @@ NumPad 5 or Left Mouse Button toggles mode to move vehicle in list/tab order (se
 NumPad [Enter] or Right Mouse Button enters selected vehicle (if it is unoccupied)
 NumPad [+] or Mouse Button 4 toggles parking mode (vehicle removed from tab list and prefixed in VehicleSort list with [P])
 NumPad [-] opens config menu
- 
+
 If the player is in a vehicle it will appear as bold in the list.
 
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
@@ -98,10 +102,14 @@ Change Log:
    Fix bug causing errors while determining vehicle name
    Fix bug causing undesired text and overlay dimensions on some screen resolution aspect ratios
    Fix bug where train cranes were still being considered part of the selection list while hidden from view
+   Fix bug with duplicate heading render
    New config option to set background alpha transparency level
+   New config option to change text size between 3 sizes
    Improved text wrapping determination
+   Dynamic sizing of column widths and background based on size of content
    Cleaned up unused code
    Optimized code
+
  v2.0.0.0 Slivicon
    Mostly re-written code
    New persistent unique ID system to help maintain vehicle order between sessions
@@ -118,11 +126,11 @@ Change Log:
 
  v1.0.0.9 Slivicon
    fix error reported by Hollauer where some items may not have a brand name
-   
+
  v1.0.0.8 Slivicon
    while using mousewheel when VehicleSort is displayed:
-     -prevent chainsaws from activating
-     -avoid camera zoom
+	 -prevent chainsaws from activating
+	 -avoid camera zoom
 
  v1.0.0.7 Slivicon
    added $l10n support
@@ -144,8 +152,8 @@ Change Log:
    added option to show fill levels of vehicles in list (total/percentage)
 
  ]]></en>
-    <fr><![CDATA[
-    
+	<fr><![CDATA[
+
 Personnalisez l'ordre dans lequel vos véhicules sont choisis lorsque vous utilisez la touche de tabulation ou passez d'une liste à l'autre.
 
 Comment utiliser:
@@ -166,10 +174,14 @@ Journal des changements:
    Correction d'un bug causant des erreurs lors de la détermination du nom du véhicule
    Correction d'un bug causant des dimensions de texte et de superposition indésirables sur certains formats d'écran de résolution d'écran
    Correction d'un bug où les grues de train étaient toujours considérées comme faisant partie de la liste de sélection alors qu'elles étaient cachées de la vue
+   Correction d'un bug avec rendu de titre en double
    Nouvelle option de configuration pour définir le niveau de transparence alpha en arrière-plan
+   Nouvelle option de configuration pour changer la taille du texte entre 3 tailles
    Détermination de l'habillage de texte améliorée
+   Dimensionnement dynamique des largeurs de colonnes et de l'arrière-plan en fonction de la taille du contenu
    Nettoyage du code inutilisé
    Code optimisé
+
  v2.0.0.0 Slivicon
    Code principalement réécrit
    Nouveau système d'identification unique persistant pour aider à maintenir l'ordre du véhicule entre les sessions
@@ -210,11 +222,11 @@ Journal des changements:
    fixé pour fonctionner correctement avec FS17 patch 1.3
    Ajout d'une option pour afficher / masquer les noms des autres joueurs
    Ajout d'une option pour afficher les niveaux de remplissage des véhicules dans la liste (total / pourcentage)
-    
+
  ]]></fr>
-    </description>
-    <iconFilename>icon.dds</iconFilename>
-    <multiplayer supported="true" />
+	</description>
+	<iconFilename>icon.dds</iconFilename>
+	<multiplayer supported="true" />
 	<inputBindings>
 		<input name="vs_toggleList" 	key1="KEY_KP_0" mouse="MOUSE_BUTTON_MIDDLE" />
 		<input name="vs_lockListItem" 	key1="KEY_KP_5" mouse="MOUSE_BUTTON_LEFT" />
@@ -223,145 +235,150 @@ Journal des changements:
 		<input name="vs_changeVehicle" 	key1="KEY_KP_enter" mouse="MOUSE_BUTTON_RIGHT" />
 		<input name="vs_showConfig" 	key1="KEY_KP_minus" />
 		<input name="vs_togglePark" 	key1="KEY_KP_plus" mouse="MOUSE_BUTTON_X1" />
-    </inputBindings>
+	</inputBindings>
 	<l10n>
-        <text name="input_vs_toggleList">
+		<text name="input_vs_toggleList">
 			<de>VehicleSort: Fahrzeugliste anzeigen</de>
 			<en>VehicleSort: Show vehicle list</en>
-            <fr>VehicleSort: Afficher la liste des véhicules</fr>
+			<fr>VehicleSort: Afficher la liste des véhicules</fr>
 		</text>
 		<text name="input_vs_lockListItem">
 			<de>VehicleSort: Listeneintrag auswählen</de>
 			<en>VehicleSort: Select list entry</en>
-            <fr>VehicleSort: Sélectionner une entrée de liste</fr>
+			<fr>VehicleSort: Sélectionner une entrée de liste</fr>
 		</text>
 		<text name="input_vs_moveCursorUp">
 			<de>VehicleSort: Auswahl hoch</de>
 			<en>VehicleSort: Move cursor up</en>
-            <fr>VehicleSort: Déplacer le curseur vers le haut</fr>
+			<fr>VehicleSort: Déplacer le curseur vers le haut</fr>
 		</text>
 		<text name="input_vs_moveCursorDown">
 			<de>VehicleSort: Auswahl runter</de>
 			<en>VehicleSort: Move cursor down</en>
-            <fr>VehicleSort: Déplace le curseur vers le bas</fr>
+			<fr>VehicleSort: Déplace le curseur vers le bas</fr>
 		</text>
 		<text name="input_vs_changeVehicle">
 			<de>VehicleSort: Ins Fahrzeug wechseln</de>
 			<en>VehicleSort: Enter selected vehicle</en>
-            <fr>VehicleSort: Entrer le véhicule sélectionné</fr>
+			<fr>VehicleSort: Entrer le véhicule sélectionné</fr>
 		</text>
 		<text name="input_vs_showConfig">
 			<de>VehicleSort: Konfiguration anzeigen</de>
 			<en>VehicleSort: Show configuration</en>
-            <fr>VehicleSort: Afficher la configuration</fr>
+			<fr>VehicleSort: Afficher la configuration</fr>
 		</text>
 		<text name="input_vs_togglePark">
 			<de>VehicleSort: Fahrzeug parken/entparken</de>
 			<en>VehicleSort: Toggle vehicle parking</en>
-            <fr>VehicleSort: Activer/désactiver le stationnement du véhicule</fr>
+			<fr>VehicleSort: Activer/désactiver le stationnement du véhicule</fr>
 		</text>
 		<text name="configHeadline">
-            <de>VehicleSort-Konfiguration</de>
-            <en>VehicleSort Configuration</en>
-            <fr>Configuration de VehicleSort</fr>
-        </text>
-        <text name="with">
-            <de>mit</de>
-            <en>with</en>
-            <fr>avec</fr>
-        </text>
+			<de>VehicleSort-Konfiguration</de>
+			<en>VehicleSort Configuration</en>
+			<fr>Configuration de VehicleSort</fr>
+		</text>
+		<text name="with">
+			<de>mit</de>
+			<en>with</en>
+			<fr>avec</fr>
+		</text>
 		<text name="showTrain">
 			<de>Züge in Fahrzeugliste anzeigen</de>
 			<en>Show trains in vehicle list</en>
-            <fr>Afficher les trains dans la liste des véhicules</fr>
+			<fr>Afficher les trains dans la liste des véhicules</fr>
 		</text>
 		<text name="showCrane">
 			<de>Zug-Kräne in Fahrzeugliste anzeigen</de>
 			<en>Show train cranes in vehicle list</en>
-            <fr>Afficher les grues de train dans la liste des véhicules</fr>
+			<fr>Afficher les grues de train dans la liste des véhicules</fr>
 		</text>
 		<text name="showBrand">
 			<de>Markenname in Fahrzeugliste anzeigen</de>
 			<en>Show brand name in vehicle list</en>
-            <fr>Afficher le nom de la marque dans la liste des véhicules</fr>
+			<fr>Afficher le nom de la marque dans la liste des véhicules</fr>
 		</text>
 		<text name="showType">
 			<de>Typ in Fahrzeugliste anzeigen</de>
 			<en>Show type in vehicle list</en>
-            <fr>Afficher le type dans la liste des véhicules</fr>
+			<fr>Afficher le type dans la liste des véhicules</fr>
 		</text>
 		<text name="showNames">
 			<de>Namen von Spielern in der Fahrzeugliste anzeigen</de>
 			<en>Show names of players in vehicle list</en>
-            <fr>Afficher les noms des joueurs dans la liste des véhicules</fr>
+			<fr>Afficher les noms des joueurs dans la liste des véhicules</fr>
 		</text>
 		<text name="showFillLevels">
 			<de>Füllstandsanzeige in Fahrzeugliste</de>
 			<en>Show fill level in vehicle list</en>
-            <fr>Afficher le niveau de remplissage dans la liste des véhicules</fr>
+			<fr>Afficher le niveau de remplissage dans la liste des véhicules</fr>
 		</text>
 		<text name="showPercentages">
 			<de>Füllstandsanzeige in Prozent</de>
 			<en>Show fill level as percentage</en>
-            <fr>Afficher le niveau de remplissage en pourcentage</fr>
+			<fr>Afficher le niveau de remplissage en pourcentage</fr>
 		</text>
 		<text name="showEmpty">
 			<de>Füllstandsanzeige bei leeren Fahrzeugen anzeigen</de>
 			<en>Show fill level of empty vehicles</en>
-            <fr>Afficher le niveau de remplissage des véhicules vides</fr>
+			<fr>Afficher le niveau de remplissage des véhicules vides</fr>
 		</text>
 		<text name="smallText">
 			<de>Kleinere Textgröße</de>
 			<en>Smaller text size</en>
-            <fr>Taille de texte plus petite</fr>
+			<fr>Taille de texte plus petite</fr>
 		</text>
 		<text name="bgTrans">
 			<de>Hintergrund Alpha Transparenz</de>
 			<en>Background alpha transparency</en>
-            <fr>Fond alpha transparence</fr>
+			<fr>Fond alpha transparence</fr>
+		</text>
+		<text name="txtSize">
+			<de>Textgröße</de>
+			<en>Text size</en>
+			<fr>Taille du texte</fr>
 		</text>
 		<text name="vs_on">
 			<de>An</de>
 			<en>On</en>
-            <fr>Activée</fr>
+			<fr>Activée</fr>
 		</text>
 		<text name="vs_off">
 			<de>Aus</de>
 			<en>Off</en>
-            <fr>Désactivée</fr>
+			<fr>Désactivée</fr>
 		</text>
 		<text name="vs_train">
 			<de>Zug</de>
 			<en>Train</en>
-            <fr>Train</fr>
+			<fr>Train</fr>
 		</text>
 		<text name="vs_crane">
 			<de>Zug-Kran</de>
 			<en>Train crane</en>
-            <fr>Grue de train</fr>
+			<fr>Grue de train</fr>
 		</text>
-        <text name="vs_implement">
-            <de>Geräte</de>
-            <en>Implement</en>
-            <fr>Outil</fr>
-        </text>
-        <text name="hired">
-            <de>Helfer</de>
-            <en>Helper</en>
-            <fr>Assistant</fr>
-        </text>
-        <text name="courseplay">
-            <de>CoursePlay</de>
-            <en>CoursePlay</en>
-            <fr>CoursePlay</fr>
-        </text>
-        <text name="followme">
-            <de>FollowMe</de>
-            <en>FollowMe</en>
-            <fr>FollowMe</fr>
-        </text>
-    </l10n>
-    <extraSourceFiles>
-        <sourceFile filename="VehicleSort.lua" />
-    </extraSourceFiles>
+		<text name="vs_implement">
+			<de>Geräte</de>
+			<en>Implement</en>
+			<fr>Outil</fr>
+		</text>
+		<text name="hired">
+			<de>Helfer</de>
+			<en>Helper</en>
+			<fr>Assistant</fr>
+		</text>
+		<text name="courseplay">
+			<de>CoursePlay</de>
+			<en>CoursePlay</en>
+			<fr>CoursePlay</fr>
+		</text>
+		<text name="followme">
+			<de>FollowMe</de>
+			<en>FollowMe</en>
+			<fr>FollowMe</fr>
+		</text>
+	</l10n>
+	<extraSourceFiles>
+		<sourceFile filename="VehicleSort.lua" />
+	</extraSourceFiles>
 </modDesc>
