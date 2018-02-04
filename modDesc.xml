@@ -322,11 +322,6 @@ Journal des changements:
 			<en>Show fill level of empty vehicles</en>
 			<fr>Afficher le niveau de remplissage des véhicules vides</fr>
 		</text>
-		<text name="smallText">
-			<de>Kleinere Textgröße</de>
-			<en>Smaller text size</en>
-			<fr>Taille de texte plus petite</fr>
-		</text>
 		<text name="bgTrans">
 			<de>Hintergrund Alpha Transparenz</de>
 			<en>Background alpha transparency</en>
