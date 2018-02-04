@@ -114,11 +114,10 @@ function VehicleSort:draw()
     end;
     if VehicleSort.debug then
       local t = {};
-      table.insert(t, string.format('aspectMultiplier [%f]', VehicleSort.aspectMultiplier));
       table.insert(t, string.format('bgX [%f]', VehicleSort.bgX));
-      table.insert(t, string.format('bgW [%f] withAspect [%f]', VehicleSort.bgW, VehicleSort.bgW * VehicleSort.aspectMultiplier));
-      table.insert(t, string.format('bgY [%f] withUiScale [%f]', VehicleSort.bgY, VehicleSort.bgY * g_gameSettings:getValue('uiScale')));
-      table.insert(t, string.format('maxTxtW [%f] withAspect [%f]', VehicleSort.maxTxtW, VehicleSort.maxTxtW * VehicleSort.aspectMultiplier));
+      table.insert(t, string.format('bgY [%f]', VehicleSort.bgY));
+      table.insert(t, string.format('bgW [%f]', VehicleSort.bgW));
+      table.insert(t, string.format('maxTxtW [%f]', VehicleSort.maxTxtW));
       for k, v in ipairs(t) do
         VehicleSort.dbgY = VehicleSort.dbgY - VehicleSort.tPos.size - VehicleSort.tPos.spacing;
         renderText(VehicleSort.dbgX, VehicleSort.dbgY, VehicleSort.tPos.size, v);
@@ -557,9 +556,8 @@ function VehicleSort:init()
     VehicleSort:dp('Skipping undesired initialization on dedicated server.', 'VehicleSort:init');
     return;
   end;
-  VehicleSort.aspectMultiplier = g_screenAspectRatio / 1.7777777777778; --credit: TyKonKet
   VehicleSort.dbgX = 0.01;
-  VehicleSort.dbgY = 0.5 * VehicleSort.aspectMultiplier;
+  VehicleSort.dbgY = 0.5;
   VehicleSort.tPos = {};
   VehicleSort.tPos.x = g_currentMission.inGameMessage.posX;  -- x Position of Textfield, originally hardcoded 0.3
   VehicleSort.tPos.y = g_currentMission.tutorialStatusBar.y;  -- y Position of Textfield, originally hardcoded 0.9
@@ -571,7 +569,7 @@ function VehicleSort:init()
   VehicleSort.tPos.spacing = g_currentMission.cruiseControlTextOffsetY;  -- Spacing between lines, originally hardcoded 0.005
   VehicleSort.tPos.padHeight = 2 * VehicleSort.tPos.spacing;
   VehicleSort.tPos.padSides = VehicleSort.tPos.padHeight;
-  VehicleSort.tPos.columnWidth = (((1 - VehicleSort.tPos.x) / 2) - VehicleSort.tPos.padSides) * VehicleSort.aspectMultiplier;
+  VehicleSort.tPos.columnWidth = (((1 - VehicleSort.tPos.x) / 2) - VehicleSort.tPos.padSides);
   VehicleSort.tPos.alignment = RenderText.ALIGN_LEFT;  -- Text Alignment
   if g_seasons ~= nil then
     VehicleSort:dp('Seasons mod detected. Lowering VehicleSort display to below the seasons weather display to avoid overlap', 'VehicleSort:init');
@@ -592,13 +590,10 @@ function VehicleSort:init()
   VehicleSort.bg = createImageOverlay('dataS2/menu/blank.png'); --credit: Decker_MMIV, VehicleGroupsSwitcher mod
   VehicleSort.bgX = VehicleSort.tPos.x - VehicleSort.tPos.spacing;
   VehicleSort.maxTxtW = VehicleSort.tPos.columnWidth - VehicleSort.tPos.padSides;
-  VehicleSort:dp(string.format('Initialized aspectMultiplier [%f] userPath [%s] saveBasePath [%s] savePath [%s] bgX [%f] maxTxtW [%f]',
-    VehicleSort.aspectMultiplier,
+  VehicleSort:dp(string.format('Initialized userPath [%s] saveBasePath [%s] savePath [%s]',
     tostring(VehicleSort.userPath),
     tostring(VehicleSort.saveBasePath),
-    tostring(VehicleSort.savePath),
-    VehicleSort.bgX,
-    VehicleSort.maxTxtW), 'VehicleSort:init');
+    tostring(VehicleSort.savePath)), 'VehicleSort:init');
 end
 
 function VehicleSort:isCrane(veh)
@@ -722,7 +717,7 @@ end
 
 function VehicleSort:renderBg(y, w, h)
   setOverlayColor(VehicleSort.bg, 0, 0, 0, VehicleSort.config[10][2]);
-  renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w * VehicleSort.aspectMultiplier, h); -- dark background TODO investigate compensating for g_gameSettings:getValue('uiScale')
+  renderOverlay(VehicleSort.bg, VehicleSort.bgX, y, w, h); -- dark background
 end
 
 function VehicleSort:reset()
