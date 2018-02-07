@@ -934,10 +934,12 @@ function VehicleSort.loadSteerable(self, savegame)
       self.vs.id = VehicleSort.resetID;
       dbg = 'Processing reset of steerable to new';
       VehicleSort.resetNewSteerableID = self.id;
-      for k, v in ipairs(VehicleSort.userOrder) do
-        if self.vs.id == v.id then
-          self.nonTabbable = v.isParked;
-          break;
+      if g_dedicatedServerInfo == nil then
+        for k, v in ipairs(VehicleSort.userOrder) do
+          if self.vs.id == v.id then
+            self.nonTabbable = v.isParked;
+            break;
+          end;
         end;
       end;
     elseif g_currentMission:getIsServer() then -- MP client will get self.vs.id from readStream

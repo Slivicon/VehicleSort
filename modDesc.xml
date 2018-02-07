@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
 	<author>Dschonny, Slivicon</author>
-	<version>2.1.0.0</version>
+	<version>2.1.0.1</version>
 	<title>
 		<de>VehicleSort</de>
 		<en>VehicleSort</en>
@@ -26,7 +26,10 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
-  v2.1.0.0 Slivicon
+ v2.1.0.1 Slivicon
+   Beheben Sie den Fehler auf dem dedizierten Server mit dem Zurücksetzen des Fahrzeugs
+
+ v2.1.0.0 Slivicon
    Behebung eines Fehlers, der beim Bestimmen des Fahrzeugnamens zu Fehlern führte
    Fehler behoben, der bei einigen Bildschirmauflösungs-Seitenverhältnissen unerwünschte Text- und Überlagerungsdimensionen verursachte
    Fehler behoben, bei dem Zugkrane immer noch als Teil der Auswahlliste betrachtet wurden, während sie nicht sichtbar waren
@@ -98,6 +101,9 @@ If the player is in a vehicle it will appear as bold in the list.
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
 
 Change Log:
+ v2.1.0.1 Slivicon
+   Fix bug on dedicated server with vehicle reset
+
  v2.1.0.0 Slivicon
    Fix bug causing errors while determining vehicle name
    Fix bug causing undesired text and overlay dimensions on some screen resolution aspect ratios
@@ -170,6 +176,9 @@ Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
 Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
 
 Journal des changements:
+ v2.1.0.1 Slivicon
+   Correction d'un bug sur le serveur dédié avec réinitialisation du véhicule
+
  v2.1.0.0 Slivicon
    Correction d'un bug causant des erreurs lors de la détermination du nom du véhicule
    Correction d'un bug causant des dimensions de texte et de superposition indésirables sur certains formats d'écran de résolution d'écran
