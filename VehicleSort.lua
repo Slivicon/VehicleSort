@@ -864,13 +864,15 @@ end
 function VehicleSort.addVehicle(self, obj)
   if obj.isSteerable then
     local exists = false;
-    for k, v in ipairs(VehicleSort.userOrder) do
-      if v.id == obj.vs.id then
-        exists = true;
-        if VehicleSort.resetID > 0 then
-          VehicleSort:dp(string.format('Reset vehicle id [%d] exists', v.id), 'VehicleSort.addVehicle');
+    if g_dedicatedServerInfo == nil then
+      for k, v in ipairs(VehicleSort.userOrder) do
+        if v.id == obj.vs.id then
+          exists = true;
+          if VehicleSort.resetID > 0 then
+            VehicleSort:dp(string.format('Reset vehicle id [%d] exists', v.id), 'VehicleSort.addVehicle');
+          end;
+          break;
         end;
-        break;
       end;
     end;
     if VehicleSort.resetID < 1 or not exists then
