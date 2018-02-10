@@ -734,7 +734,9 @@ function VehicleSort:resetFinish() --a reset took place, so revert the flags and
   VehicleSort.resetRemHasRun = false;
   VehicleSort.resetID = 0;
   VehicleSort.resetNewSteerableID = 0;
-  VehicleSort.userOrder = VehicleSort:getOrder(VehicleSort.userOrder);
+  if g_dedicatedServerInfo == nil then
+    VehicleSort.userOrder = VehicleSort:getOrder(VehicleSort.userOrder);
+  end;
 end
 
 function VehicleSort:reSort(old, new)
@@ -862,33 +864,34 @@ end
 --
 
 function VehicleSort.addVehicle(self, obj)
-  if obj.isSteerable then
-    local exists = false;
-    if g_dedicatedServerInfo == nil then
-      for k, v in ipairs(VehicleSort.userOrder) do
-        if v.id == obj.vs.id then
-          exists = true;
-          if VehicleSort.resetID > 0 then
-            VehicleSort:dp(string.format('Reset vehicle id [%d] exists', v.id), 'VehicleSort.addVehicle');
-          end;
-          break;
+  if not obj.isSteerable then
+    return;
+  end;
+  local exists = false;
+  if g_dedicatedServerInfo == nil then
+    for k, v in ipairs(VehicleSort.userOrder) do
+      if v.id == obj.vs.id then
+        exists = true;
+        if VehicleSort.resetID > 0 then
+          VehicleSort:dp(string.format('Reset vehicle id [%d] exists', v.id), 'VehicleSort.addVehicle');
         end;
+        break;
       end;
     end;
-    if VehicleSort.resetID < 1 or not exists then
-      local t = {};
-      t.id = obj.vs.id;
-      t.isParked = obj.nonTabbable;
-      table.insert(VehicleSort.userOrder, t);
-      VehicleSort.saved = false;
-      VehicleSort:dp(string.format('Steerable vehicle id [%d], vsid [%s] added.', obj.id, tostring(obj.vs.id)), 'VehicleSort.addVehicle'); -- obj.vs.id may be nil on MP connected client, but will get value from readStream
+  end;
+  if VehicleSort.resetID < 1 or (g_dedicatedServerInfo == nil and not exists) then
+    local t = {};
+    t.id = obj.vs.id;
+    t.isParked = obj.nonTabbable;
+    table.insert(VehicleSort.userOrder, t);
+    VehicleSort.saved = false;
+    VehicleSort:dp(string.format('Steerable vehicle id [%d], vsid [%s] added.', obj.id, tostring(obj.vs.id)), 'VehicleSort.addVehicle'); -- obj.vs.id may be nil on MP connected client, but will get value from readStream
+  else
+    VehicleSort:dp(string.format('Not adding reset vehicle vsid [%d] VehicleSort.resetNewSteerableID [%d]', VehicleSort.resetID, VehicleSort.resetNewSteerableID), 'VehicleSort.addVehicle');
+    if VehicleSort.resetRemHasRun then
+      VehicleSort:resetFinish();
     else
-      VehicleSort:dp(string.format('Not adding reset vehicle vsid [%d] VehicleSort.resetNewSteerableID [%d]', VehicleSort.resetID, VehicleSort.resetNewSteerableID), 'VehicleSort.addVehicle');
-      if VehicleSort.resetRemHasRun then
-        VehicleSort:resetFinish();
-      else
-        VehicleSort.resetAddHasRun = true;
-      end;
+      VehicleSort.resetAddHasRun = true;
     end;
   end;
 end
@@ -914,7 +917,7 @@ function VehicleSort.loadAttachable(self, savegame)
   self.vs.name = VehicleSort:getName(self, 'Attachable');
   VehicleSort:dp(string.format('Loaded attachable name [%s], brand [%s]', tostring(self.vs.name), tostring(self.vs.brand)), 'VehicleSort.loadAttachable');
 end
-if g_dedicatedServerInfo == nil then -- function only needed by players, as attachable objects do not need persistent IDs
+if g_dedicatedServerInfo == nil then -- function only needed by players, as attachable objects do not need to be tracked by dedicated server
   Attachable.postLoad = Utils.appendedFunction(Attachable.postLoad, VehicleSort.loadAttachable);
 end;
 
@@ -974,6 +977,9 @@ function VehicleSort.removeVehicle(self, obj)
     return;
   end;
   if VehicleSort.resetID < 1 then
+    if g_dedicatedServerInfo ~= nil then
+      return;
+    end;
     local ind = 0;
     local id = 0;
     local vsid = 0;

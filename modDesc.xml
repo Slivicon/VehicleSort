@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="38">
 	<author>Dschonny, Slivicon</author>
-	<version>2.1.0.2</version>
+	<version>2.1.0.3</version>
 	<title>
 		<de>VehicleSort</de>
 		<en>VehicleSort</en>
@@ -26,6 +26,9 @@ Wenn sich der Spieler in einem Fahrzeug befindet, wird er in der Liste fett darg
 Ursprünglicher Autor v0.1-v0.6: Dschonny. Zusätzliche Updates wurden mit Genehmigung entwickelt und veröffentlicht.
 
 Änderungsprotokoll:
+ v2.1.0.3 Slivicon
+   Beheben Sie zusätzliche erkannte Probleme mit den Funktionen removeVehicle und addVehicle, damit sie auf dedizierten Servern keine Probleme verursachen
+
  v2.1.0.2 Slivicon
    Bug auf dediziertem Server mit addVehicle-Funktion behoben
 
@@ -104,6 +107,9 @@ If the player is in a vehicle it will appear as bold in the list.
 Original Author v0.1-v0.6: Dschonny. Further updates developed and published with permission.
 
 Change Log:
+ v2.1.0.3 Slivicon
+   Fix additional discovered issues with removeVehicle and addVehicle functions so they do not cause problems on dedicated servers
+
  v2.1.0.2 Slivicon
    Fix bug on dedicated server with addVehicle function
  
@@ -182,6 +188,9 @@ Si le joueur est dans un véhicule, il apparaît en gras dans la liste.
 Auteur original v0.1-v0.6: Dschonny. Mises à jour supplémentaires développées et publiées avec permission.
 
 Journal des changements:
+ v2.1.0.3 Slivicon
+   Corrigez les problèmes supplémentaires détectés avec les fonctions removeVehicle et addVehicle afin qu'ils ne causent pas de problèmes sur les serveurs dédiés
+
  v2.1.0.2 Slivicon
    Correction d'un bug sur le serveur dédié avec la fonction addVehicle
 
