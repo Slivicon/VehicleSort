@@ -1,4 +1,6 @@
 # VehicleSort
+**For an FS 19 mod of similar function, have a look at https://github.com/sperrgebiet/FS19_VehicleExplorer**
+
 VehicleSort is a mod for the PC version of the game Farming Simulator 17.
 
 Customize the order in which your vehicles are chosen when using the tab-key or switch by navigating through a list.
